@@ -5,7 +5,6 @@ from sqlalchemy.ext.declarative import declarative_base
 import enum
 from database import Base, engine
 
-Base = declarative_base()
 
 
 class Users(Base):
