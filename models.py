@@ -1,7 +1,9 @@
 # models.py
-from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Text, create_engine, Date, ARRAY
+from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Text, create_engine, Date, ARRAY ,Enum
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import enum
+from database import Base
 
 Base = declarative_base()
 
@@ -26,5 +28,23 @@ class Users(Base):
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
+    
+class CarCategory(enum.Enum):
+    SUV = "SUV"
+    Passenger = "Passenger"
+    
+
+class Car(Base):
+    __tablename__ = "car_specifications"
+    #Define the column in the table
+    carspecID = Column(Integer, primary_key=True , autoincrement=True)
+    car_brand = Column (String,nullable=False)
+    car_model = Column (String,nullable=False)
+    car_year = Column (Integer,nullable=False)
+    tyre_size = Column (String,nullable=False)
+    car_type = Column (Enum(CarCategory), nullable=False)
+
+def __repr__(self):
+    return f"Car({self.carspecID}, {self.car_brand}, {self.car_model}, {self.car_year}, {self.tyre_size}, {self.car_type.value})"
 
 
