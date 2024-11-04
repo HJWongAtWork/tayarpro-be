@@ -99,7 +99,7 @@ class ServiceType(Base):
 class Service(Base):
     __tablename__ = "service"
     serviceid = Column(String, primary_key=True, index=True)
-    typeid = Column(String, ForeignKey("ServiceType.typeid") ,index=True)
+    typeid = Column(String, ForeignKey("servicetype.typeid") ,index=True)
     description = Column(String, index=True)
     cartype = Column(String, index=True)
     price = Column(Integer, index=True)
