@@ -6,25 +6,25 @@ import enum
 from database import Base, engine
 
 
-
 class User(Base):
     __tablename__ = "users"
     accountid = Column(String, primary_key=True, index=True)
-    firstname = Column(String, index=True)
-    lastname= Column(String, index=True)
-    phonenumber = Column(String, index=True)
-    email = Column(String, index=True)
-    address = Column(String, index=True)
-    state = Column(String, index=True)
-    city = Column(String, index=True)
-    zipcode = Column(String, index=True)
-    gender = Column(String, index=True)
-    fullname = Column(String, index=True)
-    password = Column(String, index=True)
-    isadmin = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-    dob = Column(Date, index=True)
-    
+    firstname = Column(String(255), nullable=False)
+    lastname = Column(String(255), nullable=False)
+    username = Column(String(255), nullable=False, unique=True)
+    phonenumber = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
+    address = Column(String(255), nullable=False)
+    state = Column(String(255), nullable=False)
+    city = Column(String(255), nullable=False)
+    zipcode = Column(String(255), nullable=False)
+    gender = Column(String(255), nullable=True)
+    fullname = Column(String(255), nullable=True)
+    password = Column(String(255), nullable=False)
+    isadmin = Column(String[255], default="N")
+    createdat = Column(DateTime, nullable=False)
+    dob = Column(Date, nullable=False)
+
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
 
@@ -55,6 +55,7 @@ class PaymentMethod(Base):
     status = Column(String, index=True)
     createdat = Column(DateTime, index=True)
 
+
 class Products(Base):
     __tablename__ = "products"
     productid = Column(String, primary_key=True, index=True)
@@ -62,6 +63,7 @@ class Products(Base):
     status = Column(String, index=True)
     createdby = Column(String, index=True)
     createdat = Column(DateTime, index=True)
+
 
 class Brands(Base):
     __tablename__ = "brands"
@@ -71,22 +73,24 @@ class Brands(Base):
     status = Column(String, index=True)
     createdat = Column(DateTime, index=True)
     createdby = Column(String, index=True)
-    
-class Tyre(Base):   
+
+
+class Tyre(Base):
     __tablename__ = "tyre"
     itemid = Column(String, primary_key=True, index=True)
     productid = Column(String, index=True, nullable=False)
-    brandid = Column(String,  index=True,nullable=False)
-    description = Column(String, index=True,nullable=False)
-    cartype = Column(String, index=True,nullable=False)
+    brandid = Column(String,  index=True, nullable=False)
+    description = Column(String, index=True, nullable=False)
+    cartype = Column(String, index=True, nullable=False)
     image_link = Column(String, index=True, nullable=False)
-    unitprice = Column(Integer,index=True)
+    unitprice = Column(Integer, index=True)
     details = Column(String, index=True, nullable=False, server_default='[]')
     tyresize = Column(String, index=True)
     speedindex = Column(String, index=True)
     loadindex = Column(Integer, index=True)
     stockunit = Column(String, index=True)
     status = Column(String, index=True)
+
 
 class ServiceType(Base):
     __tablename__ = "servicetype"
@@ -96,10 +100,11 @@ class ServiceType(Base):
     createdat = Column(DateTime, index=True)
     createdby = Column(String, index=True)
 
+
 class Service(Base):
     __tablename__ = "service"
     serviceid = Column(String, primary_key=True, index=True)
-    typeid = Column(String, ForeignKey("ServiceType.typeid") ,index=True)
+    typeid = Column(String, ForeignKey("servicetype.typeid"), index=True)
     description = Column(String, index=True)
     cartype = Column(String, index=True)
     price = Column(Integer, index=True)
@@ -107,11 +112,13 @@ class Service(Base):
     createdby = Column(String, index=True)
     createdat = Column(DateTime, index=True)
 
+
 class Cart(Base):
     __tablename__ = "cart"
-    accountid = Column(String, ForeignKey("users.accountid"), index=True, primary_key=True)
-    productid = Column(String, primary_key=True,index=True)
-    description = Column(String,index=True)
+    accountid = Column(String, ForeignKey("users.accountid"),
+                       index=True, primary_key=True)
+    productid = Column(String, primary_key=True, index=True)
+    description = Column(String, index=True)
     unitprice = Column(Integer, index=True)
     quantity = Column(Integer, index=True)
 
@@ -122,16 +129,20 @@ class Orders (Base):
     accountid = Column(String, ForeignKey("users.accountid"), index=True)
     createdat = Column(DateTime, index=True)
     totalprice = Column(Integer, index=True)
-    appointmentid = Column(String, ForeignKey("appointment.appointmentid"), index=True)
+    appointmentid = Column(String, ForeignKey(
+        "appointment.appointmentid"), index=True)
+
 
 class OrdersDetail(Base):
     __tablename__ = "ordersdetail"
-    orderid = Column(String, ForeignKey("orders.orderid"),primary_key=True, index=True)
+    orderid = Column(String, ForeignKey("orders.orderid"),
+                     primary_key=True, index=True)
     productid = Column(String, index=True, primary_key=True)
     carid = Column(String, index=True)
     unitprice = Column(Integer, index=True)
     quantity = Column(Integer, index=True)
     totalprice = Column(Integer, index=True)
+
 
 class Appointment(Base):
     __tablename__ = "appointment"
@@ -151,5 +162,6 @@ class Invoice(Base):
     createdat = Column(DateTime, index=True)
     orderid = Column(String, index=True)
     totalprice = Column(Integer, index=True)
+
 
 Base.metadata.create_all(bind=engine)
