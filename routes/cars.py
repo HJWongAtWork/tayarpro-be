@@ -6,8 +6,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, StrictInt, Field
 from enum import Enum
-
-router = APIRouter()
+from routes.account import get_current_user, Token
 
 
 def get_db():
@@ -19,8 +18,12 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
-# Define the Enum for Car Type
+
+router = APIRouter()
+
+
 class CarTypeEnum(str, Enum):
     SUV = "SUV"
     Passenger = "Passenger"
@@ -33,73 +36,85 @@ class CarRequest(BaseModel):
     tyre_size: str = Field(min_length=3, max_length=50)
     car_type: CarTypeEnum
 
-class CarResponse(BaseModel):
-    carspecID: int
-    car_brand: str
-    car_model: str
-    car_year: int
-    tyre_size: str
-    car_type: CarTypeEnum
 
-    class Config:
-        orm_mode = True
+@router.post('/cars')
+async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
-# Helper function to retrieve a car or raise 404
-def get_car_or_404(db: Session, car_id: int):
-    car = db.query(Car).filter(Car.carspecID == car_id).first()
-    if car is None:
-        raise HTTPException(status_code=404, detail="Car not found")
-    return car
-
-
-@router.get("/cars")
-async def read_all_cars(db: db_dependency):
     return db.query(Car).all()
 
 
-@router.get("/cars/{car_id}")
-async def get_car_by_id(db: db_dependency, car_id: int = Path(gt=0)):
-    """
-    Read cars by ID
-    """
-    return get_car_or_404(db, car_id)
+# # Define the Enum for Car Type
 
 
-@router.post("/cars")
-async def create_car(db: db_dependency, car_request: CarRequest):
-    new_car = Car(
-        car_brand=car_request.car_brand,
-        car_model=car_request.car_model,
-        car_year=car_request.car_year,
-        tyre_size=car_request.tyre_size,
-        car_type=car_request.car_type
-    )
-    db.add(new_car)
-    db.commit()
-    db.refresh(new_car)
-    return new_car
+# class CarResponse(BaseModel):
+#     carspecID: int
+#     car_brand: str
+#     car_model: str
+#     car_year: int
+#     tyre_size: str
+#     car_type: CarTypeEnum
+
+#     class Config:
+#         orm_mode = True
+
+# # Helper function to retrieve a car or raise 404
+# def get_car_or_404(db: Session, car_id: int):
+#     car = db.query(Car).filter(Car.carspecID == car_id).first()
+#     if car is None:
+#         raise HTTPException(status_code=404, detail="Car not found")
+#     return car
 
 
-@router.put("/cars/{car_id}")
-async def update_car(db: db_dependency,
-                     car_id: int,
-                     car_request: CarRequest):
-    car_result = get_car_or_404(db, car_id)
-
-    car_result.car_brand = car_request.car_brand
-    car_result.car_model = car_request.car_model
-    car_result.car_year = car_request.car_year
-    car_result.tyre_size = car_request.tyre_size
-    car_result.car_type = car_request.car_type
-
-    db.add(car_result)
-    db.commit()
-    return {"message": "Car Model successfully updated"}
+# @router.get("/cars")
+# async def read_all_cars(db: db_dependency):
+#     return db.query(Car).all()
 
 
-@router.delete("/cars/{car_id}")
-async def delete_car(db: db_dependency, car_id: int = Path(gt=0)):
-    car_result = get_car_or_404(db, car_id)
-    db.delete(car_result)
-    db.commit()
-    return {"message": "Car Model Successfully deleted"}
+# @router.get("/cars/{car_id}")
+# async def get_car_by_id(db: db_dependency, car_id: int = Path(gt=0)):
+#     """
+#     Read cars by ID
+#     """
+#     return get_car_or_404(db, car_id)
+
+
+# @router.post("/cars")
+# async def create_car(db: db_dependency, car_request: CarRequest):
+#     new_car = Car(
+#         car_brand=car_request.car_brand,
+#         car_model=car_request.car_model,
+#         car_year=car_request.car_year,
+#         tyre_size=car_request.tyre_size,
+#         car_type=car_request.car_type
+#     )
+#     db.add(new_car)
+#     db.commit()
+#     db.refresh(new_car)
+#     return new_car
+
+
+# @router.put("/cars/{car_id}")
+# async def update_car(db: db_dependency,
+#                      car_id: int,
+#                      car_request: CarRequest):
+#     car_result = get_car_or_404(db, car_id)
+
+#     car_result.car_brand = car_request.car_brand
+#     car_result.car_model = car_request.car_model
+#     car_result.car_year = car_request.car_year
+#     car_result.tyre_size = car_request.tyre_size
+#     car_result.car_type = car_request.car_type
+
+#     db.add(car_result)
+#     db.commit()
+#     return {"message": "Car Model successfully updated"}
+
+
+# @router.delete("/cars/{car_id}")
+# async def delete_car(db: db_dependency, car_id: int = Path(gt=0)):
+#     car_result = get_car_or_404(db, car_id)
+#     db.delete(car_result)
+#     db.commit()
+#     return {"message": "Car Model Successfully deleted"}
