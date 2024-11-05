@@ -8,6 +8,8 @@ import routes.cars as cars
 import routes.cart as cart
 import routes.checkout as checkout
 import routes.account as account
+import models
+from database import engine
 
 app = FastAPI(title="TayarPro API",
               description="API for TayarPro", version="1.0.0")
