@@ -21,16 +21,18 @@ app.add_middleware(
     allow_headers=["*"],  # This allows all headers
 )
 
+models.Base.metadata.create_all(bind=engine)
+
 """
 Compile the Routing Files Together
 """
 app.include_router(auth.router)
 app.include_router(account.router)
-# app.include_router(products.router)
-# app.include_router(services.router)
+app.include_router(products.router)
+app.include_router(services.router)
 app.include_router(cars.router)
-# app.include_router(cart.router)
-# app.include_router(checkout.router)
+app.include_router(cart.router)
+app.include_router(checkout.router)
 
 
 if __name__ == '__main__':
