@@ -1,0 +1,99 @@
+id,brand,model,year,tire_size,carType
+3,Proton,X70,2022,225/60R18,SUV
+4,Proton,Exora,2021,205/60R16,Passenger
+5,Proton,Iriz,2020,175/65R15,Passenger
+6,Proton,Perdana,2019,215/55R17,Passenger
+7,Proton,Suprima S,2018,205/55R16,Passenger
+8,Proton,Preve,2017,215/50R17,Passenger
+9,Proton,X50,2022,215/60R17,SUV
+10,Proton,Satria Neo,2016,195/50R15,Passenger
+11,Proton,Gen-2,2010,195/55R15,Passenger
+12,Proton,Wira,2009,175/70R13,Passenger
+13,Proton,Waja,2008,195/60R15,Passenger
+14,Proton,Savvy,2005,175/60R14,Passenger
+15,Proton,Inspira,2013,215/50R17,Passenger
+16,Proton,Arena,2006,185/70R13,Passenger
+17,Proton,Iswara,2007,175/70R13,Passenger
+18,Proton,Putra,2001,195/55R15,Passenger
+19,Proton,Juara,2004,185/60R14,Passenger
+20,Proton,Tiara,2003,165/65R13,Passenger
+21,Perodua,Myvi,2021,175/65R14,Passenger
+22,Perodua,Axia,2020,175/65R14,Passenger
+23,Perodua,Alza,2022,185/55R15,Passenger
+24,Perodua,Bezza,2021,175/65R14,Passenger
+25,Perodua,Aruz,2021,215/60R17,SUV
+26,Perodua,Kancil,2009,145/70R12,Passenger
+27,Perodua,Kelisa,2007,165/55R13,Passenger
+28,Perodua,Kenari,2006,165/55R14,Passenger
+29,Perodua,Viva,2015,155/65R13,Passenger
+30,Perodua,Rusa,2003,195/70R14,Passenger
+31,Perodua,Nautica,2009,215/65R16,SUV
+32,Toyota,Vios,2021,185/60R15,Passenger
+33,Toyota,Corolla Altis,2022,205/55R16,Passenger
+34,Toyota,Hilux,2022,265/65R17,SUV
+35,Toyota,Camry,2021,215/55R17,Passenger
+36,Toyota,Fortuner,2021,265/60R18,SUV
+37,Toyota,Yaris,2020,185/60R15,Passenger
+38,Toyota,Avanza,2020,185/65R15,Passenger
+39,Toyota,Land Cruiser,2021,285/60R18,SUV
+40,Toyota,Alphard,2022,235/50R18,Passenger
+41,Toyota,RAV4,2021,235/55R19,SUV
+42,Toyota,Harrier,2021,235/55R18,SUV
+43,Toyota,Prius,2020,195/65R15,Passenger
+44,Toyota,Rush,2020,215/65R16,SUV
+45,Toyota,Vellfire,2021,235/50R18,Passenger
+46,Toyota,Innova,2020,205/65R16,Passenger
+47,Honda,City,2020,185/55R16,Passenger
+48,Honda,Civic,2021,215/50R17,Passenger
+49,Honda,CR-V,2022,235/60R18,SUV
+50,Honda,HR-V,2022,225/50R18,SUV
+51,Honda,Accord,2021,235/45R18,Passenger
+52,Honda,Jazz,2020,175/65R15,Passenger
+53,Honda,BR-V,2021,215/60R16,SUV
+54,Honda,Odyssey,2021,235/60R17,Passenger
+55,Honda,Pilot,2020,245/50R20,SUV
+56,Honda,Passport,2021,245/60R18,SUV
+57,BMW,3 Series,2021,225/50R17,Passenger
+58,BMW,5 Series,2022,245/45R18,Passenger
+59,BMW,X5,2022,275/40R20,SUV
+60,BMW,X3,2021,245/50R19,SUV
+61,BMW,X7,2022,285/45R21,SUV
+62,BMW,7 Series,2021,245/50R18,Passenger
+63,BMW,X1,2020,225/50R18,SUV
+64,BMW,4 Series,2021,225/45R18,Passenger
+65,BMW,6 Series,2020,245/45R18,Passenger
+66,BMW,Z4,2021,225/45R17,Passenger
+67,Kia,Picanto,2020,175/65R14,Passenger
+68,Kia,Rio,2021,185/65R15,Passenger
+69,Kia,Seltos,2022,215/55R17,SUV
+70,Kia,Sorento,2022,235/65R18,SUV
+71,Kia,Sportage,2022,225/55R18,SUV
+72,Kia,Optima,2020,215/55R17,Passenger
+73,Kia,Carnival,2021,235/60R18,Passenger
+74,Kia,Stinger,2022,225/40R19,Passenger
+75,Hyundai,i10,2021,165/65R14,Passenger
+76,Hyundai,Elantra,2021,205/55R16,Passenger
+77,Hyundai,Tucson,2022,225/55R18,SUV
+78,Hyundai,Santa Fe,2022,235/60R18,SUV
+79,Hyundai,Sonata,2021,215/55R17,Passenger
+80,Hyundai,Palisade,2022,245/50R20,SUV
+81,Hyundai,Kona,2021,215/55R17,SUV
+82,Hyundai,Venue,2022,205/60R16,SUV
+83,Hyundai,Ioniq,2021,205/55R16,Passenger
+84,Hyundai,Nexo,2022,225/55R19,SUV
+85,Mercedes,A-Class,2021,205/55R17,Passenger
+86,Mercedes,C-Class,2022,225/50R17,Passenger
+87,Mercedes,E-Class,2022,245/45R18,Passenger
+88,Mercedes,S-Class,2021,255/45R19,Passenger
+89,Mercedes,GLA,2022,215/55R18,SUV
+90,Mercedes,GLB,2021,235/55R18,SUV
+91,Mercedes,GLC,2022,235/55R19,SUV
+92,Mercedes,GLE,2022,275/50R20,SUV
+93,Mercedes,GLS,2021,275/50R20,SUV
+94,Mercedes,EQC,2022,235/55R19,SUV
+95,Mercedes,CLA,2021,225/45R18,Passenger
+96,Mercedes,AMG GT,2021,265/35R19,Passenger
+97,Mercedes,G-Class,2021,275/55R19,SUV
+98,Mercedes,Maybach S-Class,2022,255/45R20,Passenger
+99,Mercedes,Sprinter,2022,235/65R16,Passenger
+100,Mercedes,V-Class,2021,225/60R16,Passenger

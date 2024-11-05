@@ -1,0 +1,60 @@
+serviceid,typeid,description,cartype,price,status
+SVR01,ENGOIL,Change Engine Oil Filter,Passenger,10,a
+SVR02,ENGOIL,Change Engine Oil Filter,SUV,10,a
+SVR03,ENGOIL,Change Auto Transmission Fluid (ATF),Passenger,35,a
+SVR04,ENGOIL,Change Auto Transmission Fluid (ATF),SUV,45,a
+SVR05,ENGOIL,Change Spark Plug,Passenger,35,a
+SVR06,ENGOIL,Change Spark Plug,SUV,45,a
+SVR07,ENGOIL,Change Gear Oil (1 AXLE),Passenger,30,a
+SVR08,ENGOIL,Change Gear Oil (1 AXLE),SUV,40,a
+SVR09,BRKSVR,Change Front Disk Brake Pad,Passenger,50,a
+SVR10,BRKSVR,Change Front Disk Brake Pad,SUV,60,a
+SVR11,BRKSVR,Change Rear Disk Brake Pad,Passenger,50,a
+SVR12,BRKSVR,Change Rear Disk Brake Pad,SUV,60,a
+SVR13,BRKSVR,Change Rear Brake Shoe,Passenger,60,a
+SVR14,BRKSVR,Change Rear Brake Shoe,SUV,70,a
+SVR15,BRKSVR,Change Brake Fluid,Passenger,50,a
+SVR16,BRKSVR,Change Brake Fluid,SUV,60,a
+SVR17,BRKSVR,Service Front Disk Brake Pad,Passenger,30,a
+SVR18,BRKSVR,Service Front Disk Brake Pad,SUV,40,a
+SVR19,BRKSVR,Service & Adjust Rear Brakes,Passenger,40,a
+SVR20,BRKSVR,Service & Adjust Rear Brakes,SUV,60,a
+SVR21,ALGSVR,Alignment Front,Passenger,25,a
+SVR22,ALGSVR,Alignment Front,SUV,40,a
+SVR23,ALGSVR,Alignment Front & Rear,Passenger,35,a
+SVR24,ALGSVR,Alignment Front & Rear,SUV,50,a
+SVR25,ALGSVR,"Alignment, Camber & Caster (Wira, Persona & Preve)",Passenger,45,a
+SVR26,ADJSVR,Camber Adjustment (One Side),Passenger,30,a
+SVR27,ADJSVR,Camber Adjustment (One Side),SUV,40,a
+SVR28,ADJSVR,Caster Adjustment (One Side),Passenger,30,a
+SVR29,ADJSVR,Caster Adjustment (One Side),SUV,40,a
+SVR30,ADJSVR,Camber Adjusting Stud & Nut (Small),Passenger,40,a
+SVR31,ADJSVR,Camber Adjusting Stud & Nut (Small),SUV,40,a
+SVR32,ADJSVR,Camber Adjusting Stud & Nut (Big),Passenger,70,a
+SVR33,ADJSVR,Camber Adjusting Stud & Nut (Big),SUV,70,a
+SVR34,BLCSVR,"Off Wheel Balancing (12' & 13'"")""",Passenger,6,a
+SVR35,BLCSVR,"Off Wheel Balancing (14')""",Passenger,6,a
+SVR36,BLCSVR,"Off Wheel Balancing (15')""",Passenger,6,a
+SVR37,BLCSVR,"Off Wheel Balancing (15')""",SUV,12,a
+SVR38,BLCSVR,"Off Wheel Balancing (16')""",Passenger,7,a
+SVR39,BLCSVR,"Off Wheel Balancing (16')""",SUV,12,a
+SVR40,BLCSVR,"Off Wheel Balancing (17')""",Passenger,8,a
+SVR41,BLCSVR,"Off Wheel Balancing (17')""",SUV,15,a
+SVR42,BLCSVR,"Off Wheel Balancing (18')""",Passenger,12,a
+SVR43,BLCSVR,"Off Wheel Balancing (18')""",SUV,18,a
+SVR44,BLCSVR,"Off Wheel Balancing (19')""",Passenger,15,a
+SVR45,BLCSVR,"Off Wheel Balancing (19')""",SUV,20,a
+SVR46,BLCSVR,"Off Wheel Balancing (20')""",Passenger,15,a
+SVR47,BLCSVR,"Off Wheel Balancing (20')""",SUV,20,a
+SVR48,FXWSVR,"Fixing Wheel (12' & 13'"")""",Passenger,6,a
+SVR49,FXWSVR,"Fixing Wheel (16' & 17'"")""",Passenger,10,a
+SVR50,FXWSVR,"Fixing Wheel (18' & 20'"")""",Passenger,15,a
+SVR51,FXWSVR,Fixing Wheel,SUV,15,a
+SVR52,FXWSVR,"Fixing Wheel (20' Run Flat)""",Passenger,60,a
+SVR53,FXWSVR,"Fixing Wheel (20' & Above Run Flat)""",Passenger,70,a
+SVR54,OTHSVR,Change Coolant,Passenger,30,a
+SVR55,OTHSVR,Change Coolant,SUV,40,a
+SVR56,OTHSVR,Nitrogen Refill,Passenger,5,a
+SVR57,OTHSVR,Nitrogen Refill,SUV,5,a
+SVR58,OTHSVR,Nitrogen Top Up,Passenger,2.5,a
+SVR59,OTHSVR,Nitrogen Top Up,SUV,2.5,a

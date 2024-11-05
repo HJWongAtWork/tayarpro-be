@@ -29,6 +29,17 @@ class User(Base):
         return f"<User(username='{self.username}', email='{self.email}')>"
 
 
+class CarRegistration(Base):
+    __tablename__ = "car_registration"
+    carid = Column(Integer, primary_key=True, autoincrement=True)
+    plate_num = Column(String, nullable=False)
+
+    added_at = Column(DateTime, nullable=False)
+    accountid = Column(String, ForeignKey("users.accountid"), index=True)
+    car_spec_id = Column(Integer, ForeignKey(
+        "car_specifications.carspecID"), index=True)
+
+
 class CarCategory(enum.Enum):
     SUV = "SUV"
     Passenger = "Passenger"
@@ -44,9 +55,6 @@ class Car(Base):
     tyre_size = Column(String, nullable=False)
     car_type = Column(Enum(CarCategory), nullable=False)
 
-    def __repr__(self):
-        return f"Car({self.carspecID}, {self.car_brand}, {self.car_model}, {self.car_year}, {self.tyre_size}, {self.car_type.value})"
-
 
 class PaymentMethod(Base):
     __tablename__ = "paymentmethod"
@@ -59,10 +67,10 @@ class PaymentMethod(Base):
 class Products(Base):
     __tablename__ = "products"
     productid = Column(String, primary_key=True, index=True)
-    description = Column(String, index=True)
-    status = Column(String, index=True)
-    createdby = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
+    description = Column(String, nullable=True)
+    status = Column(String, nullable=True)
+    createdby = Column(String, nullable=True)
+    createdat = Column(DateTime, nullable=True)
 
 
 class Brands(Base):
@@ -78,7 +86,9 @@ class Brands(Base):
 class Tyre(Base):
     __tablename__ = "tyre"
     itemid = Column(String, primary_key=True, index=True)
+
     productid = Column(String, index=True, nullable=False)
+
     brandid = Column(String,  index=True, nullable=False)
     description = Column(String, index=True, nullable=False)
     cartype = Column(String, index=True, nullable=False)
@@ -95,10 +105,10 @@ class Tyre(Base):
 class ServiceType(Base):
     __tablename__ = "servicetype"
     typeid = Column(String, primary_key=True, index=True)
-    description = Column(String, index=True)
-    status = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-    createdby = Column(String, index=True)
+    description = Column(String, nullable=True)
+    status = Column(String, nullable=True)
+    createdat = Column(DateTime, nullable=True)
+    createdby = Column(String, nullable=True)
 
 
 class Service(Base):
@@ -109,8 +119,9 @@ class Service(Base):
     cartype = Column(String, index=True)
     price = Column(Integer, index=True)
     status = Column(String, index=True)
-    createdby = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
+    createdby = Column(String, index=True, nullable=True)
+    createdat = Column(DateTime, index=True, nullable=True)
+    image_link = Column(String, index=True, nullable=True)
 
 
 class Cart(Base):
@@ -130,7 +141,7 @@ class Orders (Base):
     createdat = Column(DateTime, index=True)
     totalprice = Column(Integer, index=True)
     appointmentid = Column(String, ForeignKey(
-        "appointment.appointmentid"), index=True)
+        "appointment.appointmentid"), index=True, nullable=True)
 
 
 class OrdersDetail(Base):
@@ -164,4 +175,5 @@ class Invoice(Base):
     totalprice = Column(Integer, index=True)
 
 
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
