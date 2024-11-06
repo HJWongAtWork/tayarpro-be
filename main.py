@@ -8,6 +8,7 @@ import routes.cars as cars
 import routes.cart as cart
 import routes.checkout as checkout
 import routes.account as account
+import routes.transactions as transactions
 
 app = FastAPI(title="TayarPro API",
               description="API for TayarPro", version="1.0.0")
@@ -26,9 +27,10 @@ Compile the Routing Files Together
 """
 app.include_router(auth.router)
 app.include_router(account.router)
-# app.include_router(products.router)
-# app.include_router(services.router)
+app.include_router(products.router)
+app.include_router(services.router)
 app.include_router(cars.router)
+app.include_router(transactions.router)
 # app.include_router(cart.router)
 # app.include_router(checkout.router)
 

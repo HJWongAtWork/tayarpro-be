@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
 from fastapi.responses import RedirectResponse
-from models import Car
+from models import CarRegistration, Car, CarCategory
 from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, StrictInt, Field
 from enum import Enum
 from routes.account import get_current_user, Token
+from datetime import datetime
 
 
 def get_db():
@@ -29,6 +30,11 @@ class CarTypeEnum(str, Enum):
     Passenger = "Passenger"
 
 
+class CarRegistrationRequest(BaseModel):
+    plate_num: str = Field(min_length=3, max_length=50)
+    car_spec_id: StrictInt = Field(gt=0)
+
+
 class CarRequest(BaseModel):
     car_brand: str = Field(min_length=3, max_length=50)
     car_model: str = Field(min_length=3, max_length=50)
@@ -37,12 +43,43 @@ class CarRequest(BaseModel):
     car_type: CarTypeEnum
 
 
-@router.post('/cars')
-async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
+"""Need to have data at Car Specification"""
+
+
+@router.post('/add_new_car')
+async def create_car(db: db_dependency, user: user_dependency, car: CarRegistrationRequest):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    return db.query(Car).all()
+    new_car = CarRegistration(
+        plate_num=car.plate_num,
+        car_spec_id=car.car_spec_id,
+        accountid=user["accountid"],
+        added_at=datetime.now()
+
+    )
+
+    db.add(new_car)
+    db.commit()
+    return {
+        "message": "Car successfully registered",
+        "carid": new_car.carid
+    }
+
+
+"""
+View cars registered owned by the user
+"""
+
+
+@router.post('/view_car')
+async def view_car(db: db_dependency, user: user_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    car = db.query(CarRegistration).filter(
+        CarRegistration.accountid == user["accountid"]).all()
+    return car
 
 
 # # Define the Enum for Car Type

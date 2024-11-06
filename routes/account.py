@@ -48,11 +48,11 @@ def authenticate_user(username: str, password: str, db):
 
 
 def create_access_token(username: str,
-                        user_id: int,
+                        account_id: int,
                         expires_delta: timedelta):
     encode = {
         "sub": username,
-        "id": user_id
+        "accountid": account_id
     }
 
     expires = datetime.now(timezone.utc) + expires_delta
@@ -64,12 +64,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        user_id: int = payload.get("id")
-        if username is None or user_id is None:
+        accountid: int = payload.get("accountid")
+        if username is None or accountid is None:
             raise HTTPException(status_code=401,
                                 detail="Could not validate user.")
 
-        return {"username": username, "id": user_id}
+        return {"username": username, "accountid": accountid}
     except JWTError:
         raise HTTPException(status_code=401,
                             detail="Could not validate user.")
