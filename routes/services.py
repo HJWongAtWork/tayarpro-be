@@ -42,7 +42,7 @@ For /service/{service_id} page in frontend
 """
 
 
-@router.get('/service/{service_id}', tags=["Services"])
+@router.get('/service/', tags=["Services"])
 async def get_service_by_id(service_id: int, db: db_dependency):
     service = db.query(Service).filter(
         Service.service_id == service_id).first()
