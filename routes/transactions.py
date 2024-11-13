@@ -117,7 +117,6 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
     if check_cart:
         check_cart.quantity += tyre.quantity
         db.commit()
-        return {"message": "Tyre added to Cart"}
 
     else:
         new_cart = Cart(
@@ -131,12 +130,28 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
         db.add(new_cart)
         db.commit()
 
-        all_carts = db.query(Cart).filter(
-            Cart.accountid == user['accountid']).all()
-        return {
-            "message": "Tyre added to Cart",
-            "carts": all_carts
-        }
+    all_carts = db.query(Cart).filter(
+        Cart.accountid == user['accountid']).all()
+
+    return {
+        "message": "Tyre added to Cart",
+        "carts": all_carts
+    }
+
+
+@router.post('/get_cart', tags=['Transaction'])
+async def cart_using_post(db:db_dependency, user:user_dependency):
+    """
+    Cart data using post method
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
+
+    return cart
+
+
+
 
 
 @router.get('/get_cart', tags=["Transactions"])
