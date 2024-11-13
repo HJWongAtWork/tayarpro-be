@@ -22,8 +22,8 @@ class User(Base):
     fullname = Column(String(255), nullable=True)
     password = Column(String(255), nullable=False)
     isadmin = Column(String[255], default="N")
-    createdat = Column(DateTime, nullable=False)
-    dob = Column(Date, nullable=False)
+    createdat = Column(DateTime, nullable=True)
+    dob = Column(Date, nullable=True)
 
     def __repr__(self):
         return f"<User(username='{self.username}', email='{self.email}')>"
@@ -175,5 +175,5 @@ class Invoice(Base):
     totalprice = Column(Integer, index=True)
 
 
-Base.metadata.drop_all(bind=engine)
+# Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)

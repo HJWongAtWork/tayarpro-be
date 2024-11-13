@@ -108,19 +108,18 @@ class UserUpdate(BaseModel):
 
 
 class UserRegisterRequest(BaseModel):
-    username: str = Field(..., example="rahmanrom")
-    firstname: str = Field(..., example="HJ")
-    lastname: str = Field(..., example="Wong")
-    phonenumber: str = Field(..., example="0123456789")
+    # username: str = Field(..., example="rahmanrom")
+    # firstname: str = Field(..., example="HJ")
+    # lastname: str = Field(..., example="Wong")
+    # phonenumber: str = Field(..., example="0123456789")
     email: EmailStr = Field(..., example="rahmanrom@gmail.com")
-    address: str = Field(..., example="Jalan 1")
-    state: str = Field(..., example="Selangor")
-    city: str = Field(..., example="Petaling Jaya")
-    zipcode: str = Field(..., example="47810")
-    gender: str = Field(..., example="Male")
+    # address: str = Field(..., example="Jalan 1")
+    # state: str = Field(..., example="Selangor")
+    # city: str = Field(..., example="Petaling Jaya")
+    # zipcode: str = Field(..., example="47810")
+    # gender: str = Field(..., example="Male")
     password: str = Field(..., example="123456")
-    dob: date = Field(..., example="1990-01-01")
-    password: str = Field(..., example="123456")
+    # dob: date = Field(..., example="1990-01-01")
 
 
 # query to retrieve the password by email
@@ -135,26 +134,25 @@ async def register_user(user: UserRegisterRequest, db: db_dependency):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(
-            status_code=400, detail="Username already registered")
+    # if db.query(User).filter(User.username == user.username).first():
+    #     raise HTTPException(
+    #         status_code=400, detail="Username already registered")
 
     accountid = str(uuid.uuid4())
 
     new_user = User(
         accountid=accountid,
-        username=user.username,
-        firstname=user.firstname,
-        lastname=user.lastname,
-        phonenumber=user.phonenumber,
+        username="yeepeng1",
+        firstname="",
+        lastname="",
+        phonenumber="",
         email=user.email,
-        address=user.address,
-        state=user.state,
-        city=user.city,
-        zipcode=user.zipcode,
+        address="",
+        state="",
+        city="",
+        zipcode="",
         password=bcrypt_context.hash(user.password),
         createdat=time_now,
-        dob=user.dob
     )
 
     db.add(new_user)

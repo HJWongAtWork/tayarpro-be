@@ -139,6 +139,58 @@ async def get_cart(db: db_dependency, user: user_dependency):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
+    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).order_by(Cart.productid).all()
 
     return cart
+
+@router.delete('/remove_from_cart/{product_id}', tags=["Transactions"])
+async def remove_from_cart(product_id: str, db: db_dependency, user: user_dependency):
+    """
+    Remove item from cart
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Find the cart item
+    cart_item = db.query(Cart).filter(
+        Cart.accountid == user['accountid'],
+        Cart.productid == product_id
+    ).first()
+
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Item not found in cart")
+
+    # Delete the item
+    db.delete(cart_item)
+    db.commit()
+    return {"message": "Item removed from cart"}
+
+@router.put('/update_cart_quantity/{product_id}/{quantity}', tags=["Transactions"])
+async def update_cart_quantity(
+    product_id: str,
+    quantity: int,
+    db: db_dependency,
+    user: user_dependency
+):
+    """
+    Update item quantity in cart
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Find the cart item
+    cart_item = db.query(Cart).filter(
+        Cart.accountid == user['accountid'],
+        Cart.productid == product_id
+    ).first()
+
+    if not cart_item:
+        raise HTTPException(status_code=404, detail="Item not found in cart")
+
+    if quantity < 1:
+        raise HTTPException(status_code=400, detail="Quantity must be at least 1")
+
+    # Update the quantity directly
+    cart_item.quantity = quantity
+    db.commit()
+    return {"message": "Quantity updated", "quantity": quantity}
