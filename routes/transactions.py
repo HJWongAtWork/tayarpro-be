@@ -82,7 +82,10 @@ async def add_service_to_cart(db: db_dependency, user: user_dependency, service:
 
         db.add(new_cart)
         db.commit()
-        return {"message": "Service added to Cart"}
+
+        all_carts = db.query(Cart).filter(
+            Cart.accountid == user['accountid']).all()
+        return {"message": "Service added to Cart", "carts": all_carts}
 
 
 @router.post('/add_tyre_to_cart', tags=["Transactions"])
@@ -127,7 +130,13 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
 
         db.add(new_cart)
         db.commit()
-        return {"message": "Tyre added to Cart"}
+
+        all_carts = db.query(Cart).filter(
+            Cart.accountid == user['accountid']).all()
+        return {
+            "message": "Tyre added to Cart",
+            "carts": all_carts
+        }
 
 
 @router.get('/get_cart', tags=["Transactions"])
