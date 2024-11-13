@@ -42,7 +42,7 @@ For specific product page in Frontend: -
 """
 
 
-@router.get('/get_product_by_id/{productid}', tags=["Products"])
+@router.get('/get_product_by_id', tags=["Products"])
 async def get_tyre_by_id(tyre_id: str, db: db_dependency):
     tyre = db.query(Tyre).filter(Tyre.itemid == tyre_id).first()
     if not tyre:
