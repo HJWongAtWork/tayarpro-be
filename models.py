@@ -1,179 +1,162 @@
-# models.py
-from sqlalchemy import Column, String, Integer, ForeignKey, Numeric, Text, create_engine, Date, ARRAY, Enum, DateTime
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Numeric, Text
+from database import Base
 import enum
-from database import Base, engine
-
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
-    accountid = Column(String, primary_key=True, index=True)
+    accountid = Column(String(255), primary_key=True, index=True)
     firstname = Column(String(255), nullable=False)
     lastname = Column(String(255), nullable=False)
     username = Column(String(255), nullable=False, unique=True)
-    phonenumber = Column(String(255), nullable=False)
+    phonenumber = Column(String(15), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
     address = Column(String(255), nullable=False)
     state = Column(String(255), nullable=False)
     city = Column(String(255), nullable=False)
-    zipcode = Column(String(255), nullable=False)
+    zipcode = Column(Numeric(15), nullable=False)
     gender = Column(String(255), nullable=True)
     fullname = Column(String(255), nullable=True)
     password = Column(String(255), nullable=False)
-    isadmin = Column(String[255], default="N")
+    isadmin = Column(String(255), default="N", nullable=False)
     createdat = Column(DateTime, nullable=False)
     dob = Column(Date, nullable=False)
 
-    def __repr__(self):
-        return f"<User(username='{self.username}', email='{self.email}')>"
+class RegsiterCar(Base):
+    __tablename__ = "registercar"
+    carid = Column(String(255), primary_key=True, index=True, nullable=False)
+    accountid = Column(String(255), ForeignKey("users.accountid"),nullable=False)
+    carbrand = Column(String(255), nullable=False)
+    carmodel = Column(String(255), nullable=False)
+    platenumber = Column(String(255), nullable=False)
+    cartype = Column(String(255), nullable=False)
+    createdat = Column(DateTime, nullable=False) 
 
-
-class CarRegistration(Base):
-    __tablename__ = "car_registration"
-    carid = Column(Integer, primary_key=True, autoincrement=True)
-    plate_num = Column(String, nullable=False)
-
-    added_at = Column(DateTime, nullable=False)
-    accountid = Column(String, ForeignKey("users.accountid"), index=True)
-    car_spec_id = Column(Integer, ForeignKey(
-        "car_specifications.carspecID"), index=True)
-
-
-class CarCategory(enum.Enum):
-    SUV = "SUV"
-    Passenger = "Passenger"
-
-
-class Car(Base):
-    __tablename__ = "car_specifications"
-    # Define the column in the table
-    carspecID = Column(Integer, primary_key=True, autoincrement=True)
-    car_brand = Column(String, nullable=False)
-    car_model = Column(String, nullable=False)
-    car_year = Column(Integer, nullable=False)
-    tyre_size = Column(String, nullable=False)
-    car_type = Column(Enum(CarCategory), nullable=False)
-
+class Feedback (Base):
+    __tablename__ = "feedback"
+    feedbackid = Column(String(255), primary_key=True, index=True, nullable=False)
+    email = Column(String(255), ForeignKey("users.email"),nullable=False)
+    subject = Column(String(255), nullable=False)
+    content = Column(String(255), nullable=False)
+    createdat = Column(DateTime, nullable=False)
 
 class PaymentMethod(Base):
     __tablename__ = "paymentmethod"
-    methodid = Column(String, primary_key=True, index=True)
-    description = Column(String, index=True)
-    status = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-
+    methodid = Column(String (255), primary_key=True)
+    description = Column(String (255) )
+    status = Column(String (255))
+    createdat = Column(DateTime)
 
 class Products(Base):
     __tablename__ = "products"
-    productid = Column(String, primary_key=True, index=True)
-    description = Column(String, nullable=True)
-    status = Column(String, nullable=True)
-    createdby = Column(String, nullable=True)
-    createdat = Column(DateTime, nullable=True)
-
+    productid = Column(String (255), primary_key=True, nullable=False)
+    description = Column(String (255), nullable=False  )
+    status = Column(String (255) , nullable=False )
+    createdby = Column(String (255), ForeignKey("users.accountid"), nullable=False )
+    createdat = Column(DateTime , nullable=False )
 
 class Brands(Base):
     __tablename__ = "brands"
-    brandid = Column(String, primary_key=True, index=True)
-    productid = Column(String, index=True)
-    description = Column(String, index=True)
-    status = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-    createdby = Column(String, index=True)
+    brandid = Column(String (255), primary_key=True, nullable=False)
+    productid = Column(String (255), ForeignKey("products.productid"), nullable=False )
+    description = Column(String (255), nullable=False)
+    status = Column(String (255), nullable=False )
+    createdat = Column(DateTime, nullable=False  )
+    createdby = Column(String (255), ForeignKey("users.accountid"),nullable=False )
 
-
-class Tyre(Base):
+    tyres = relationship("Tyre",back_populates="brand")
+    
+class Tyre(Base):   
     __tablename__ = "tyre"
-    itemid = Column(String, primary_key=True, index=True)
+    itemid = Column(String (255), primary_key=True,  nullable=False )
+    productid = Column(String (255), ForeignKey("products.productid"),nullable=False)
+    brandid = Column(String (255), ForeignKey("brands.brandid"),nullable=False)
+    description = Column(String (255),nullable=False)
+    cartype = Column(String (255), nullable=False)
+    image_link = Column(Text  , nullable=False)
+    unitprice = Column(Numeric (8,2) , nullable=False)
+    details = Column(String (255), nullable=False)
+    details2 = Column (String (255), nullable=True)
+    details3 = Column (String (255), nullable=True)
+    tyresize = Column(String (255) , nullable=False )
+    speedindex = Column(String (255) , nullable=False )
+    loadindex = Column(Numeric(15), nullable=False  )
+    stockunit = Column(Numeric (15)  , nullable=False)
+    status = Column(String (255) , nullable=False )
+    createdby = Column(String(255), ForeignKey("users.accountid"),nullable=False)
+    createdat = Column(DateTime, nullable=False)
 
-    productid = Column(String, index=True, nullable=False)
-
-    brandid = Column(String,  index=True, nullable=False)
-    description = Column(String, index=True, nullable=False)
-    cartype = Column(String, index=True, nullable=False)
-    image_link = Column(String, index=True, nullable=False)
-    unitprice = Column(Integer, index=True)
-    details = Column(String, index=True, nullable=False, server_default='[]')
-    tyresize = Column(String, index=True)
-    speedindex = Column(String, index=True)
-    loadindex = Column(Integer, index=True)
-    stockunit = Column(String, index=True)
-    status = Column(String, index=True)
-
+    brand = relationship("Brands",back_populates="tyres")
 
 class ServiceType(Base):
     __tablename__ = "servicetype"
-    typeid = Column(String, primary_key=True, index=True)
-    description = Column(String, nullable=True)
-    status = Column(String, nullable=True)
-    createdat = Column(DateTime, nullable=True)
-    createdby = Column(String, nullable=True)
-
+    typeid = Column(String (255), primary_key=True, nullable=False  )
+    description = Column(String (255), nullable=False )
+    status = Column(String (255), nullable=False  )
+    createdat = Column(DateTime, nullable=False  )
+    createdby = Column(String (255), ForeignKey("users.accountid"), nullable=False  )
 
 class Service(Base):
     __tablename__ = "service"
-    serviceid = Column(String, primary_key=True, index=True)
-    typeid = Column(String, ForeignKey("servicetype.typeid"), index=True)
-    description = Column(String, index=True)
-    cartype = Column(String, index=True)
-    price = Column(Integer, index=True)
-    status = Column(String, index=True)
-    createdby = Column(String, index=True, nullable=True)
-    createdat = Column(DateTime, index=True, nullable=True)
-    image_link = Column(String, index=True, nullable=True)
-
+    serviceid = Column(String (255), primary_key=True, nullable=False )
+    typeid = Column(String (255), ForeignKey("servicetype.typeid") , nullable=False )
+    description = Column(String (255), nullable=False  )
+    cartype = Column(String (255), nullable=False  )
+    price = Column(Numeric(8,2), nullable=False  )
+    status = Column(String (255), nullable=False  )
+    createdby = Column(String (255), ForeignKey("users.accountid"), nullable=False  )
+    createdat = Column(DateTime, nullable=False  )
 
 class Cart(Base):
     __tablename__ = "cart"
-    accountid = Column(String, ForeignKey("users.accountid"),
-                       index=True, primary_key=True)
-    productid = Column(String, primary_key=True, index=True)
-    description = Column(String, index=True)
-    unitprice = Column(Integer, index=True)
-    quantity = Column(Integer, index=True)
+    accountid = Column(String (255), ForeignKey("users.accountid")  , primary_key=True)
+    productid = Column(String (255), primary_key=True )
+    description = Column(String (255), nullable=False )
+    unitprice = Column(Numeric(8,2), nullable=False  )
+    quantity = Column(Numeric(15,0), nullable=False  )
 
 
 class Orders (Base):
     __tablename__ = "orders"
-    orderid = Column(String, primary_key=True, index=True)
-    accountid = Column(String, ForeignKey("users.accountid"), index=True)
-    createdat = Column(DateTime, index=True)
-    totalprice = Column(Integer, index=True)
-    appointmentid = Column(String, ForeignKey(
-        "appointment.appointmentid"), index=True, nullable=True)
-
+    orderid = Column(String (255), primary_key=True, nullable=False  )
+    accountid = Column(String (255), ForeignKey("users.accountid"), nullable=False  )
+    createdat = Column(DateTime, nullable=False  )
+    totalprice = Column(Numeric(8,2), nullable=False  )
+    appointmentid = Column(String (255), ForeignKey("appointment.appointmentid"), nullable=False  )
 
 class OrdersDetail(Base):
     __tablename__ = "ordersdetail"
-    orderid = Column(String, ForeignKey("orders.orderid"),
-                     primary_key=True, index=True)
-    productid = Column(String, index=True, primary_key=True)
-    carid = Column(String, index=True)
-    unitprice = Column(Integer, index=True)
-    quantity = Column(Integer, index=True)
-    totalprice = Column(Integer, index=True)
-
+    orderid = Column(String (255), ForeignKey("orders.orderid"),primary_key=True, nullable=False  )
+    productid = Column(String (255), primary_key=True)
+    carid = Column(String (255), ForeignKey("regsitercar.carid"),nullable=False  )
+    unitprice = Column(Numeric(15,0), nullable=False  )
+    quantity = Column(Numeric(15,0), nullable=False  )
+    totalprice = Column(Numeric(8,2), nullable=False  )
 
 class Appointment(Base):
     __tablename__ = "appointment"
-    appointmentid = Column(String, primary_key=True, index=True)
-    accountid = Column(String, ForeignKey("users.accountid"), index=True)
-    appointmentday = Column(DateTime, index=True)
-    createdat = Column(DateTime, index=True)
-    completed = Column(String, index=True)
-    orderid = Column(String, index=True)
+    appointmentid = Column(String (255), primary_key=True, nullable=False  )
+    accountid = Column(String (255), ForeignKey("users.accountid"), nullable=False  )
+    appointmentday = Column(DateTime, nullable=False)
+    createdat = Column(DateTime, nullable=False  )
+    status = Column(String (255), nullable=False  )
+    orderid = Column(String (255), ForeignKey("orders.orderid"),nullable=False)
 
 
 class Invoice(Base):
     __tablename__ = "invoice"
-    invoiceid = Column(String, primary_key=True, index=True)
-    accountid = Column(String, index=True)
-    methodid = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-    orderid = Column(String, index=True)
-    totalprice = Column(Integer, index=True)
+    invoiceid = Column(String (255), primary_key=True, nullable=False  )
+    accountid = Column(String (255),ForeignKey("users.accountid"), nullable=False  )
+    methodid = Column(String (255), nullable=False  )
+    createdat = Column(DateTime, nullable=False  )
+    orderid = Column(String (255), ForeignKey("orders.orderid"),nullable=False  )
+    totalprice = Column(Numeric(8,2), nullable=False  )
 
-
-# Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+class Car(Base):
+    __tablename__ = "car_specifications"
+    # Define the column in the table
+    car_brand = Column(String(255), nullable=False)
+    car_model = Column(String (255), nullable=False)
+    car_year = Column(Integer, nullable=False)
+    tyre_size = Column(String (255), nullable=False)
+    car_type = Column(String (255), nullable=False)
