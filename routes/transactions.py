@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Cart, Tyre, Service
+from models import Cart, Tyre, Service, Orders, OrdersDetail, Appointment, Invoice
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from routes.account import get_current_user, Token
+import uuid
+from datetime import datetime
 
 
 # Dependency
@@ -30,15 +32,17 @@ Add Service to Cart
 
 class addServiceToCart(BaseModel):
     service_id: str
-    quantity: int
+    quantity: int = Field(..., gt=0,
+                          description="Quantity must be greater than 0")
 
 
 class addTyreToCart(BaseModel):
     tyre_id: str
-    quantity: int
+    quantity: int = Field(..., gt=0,
+                          description="Quantity must be greater than 0")
 
 
-@router.post('/add_service_to_cart', tags=["Transactions"])
+@router.post('/add_service_to_cart', tags=["Cart"])
 async def add_service_to_cart(db: db_dependency, user: user_dependency, service: addServiceToCart):
     """
     service_id: int
@@ -88,7 +92,7 @@ async def add_service_to_cart(db: db_dependency, user: user_dependency, service:
         return {"message": "Service added to Cart", "carts": all_carts}
 
 
-@router.post('/add_tyre_to_cart', tags=["Transactions"])
+@router.post('/add_tyre_to_cart', tags=["Cart"])
 async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTyreToCart):
     """
     tyre_id: int
@@ -139,8 +143,8 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
     }
 
 
-@router.post('/get_cart', tags=['Transaction'])
-async def cart_using_post(db:db_dependency, user:user_dependency):
+@router.post('/get_cart', tags=['Cart'])
+async def cart_using_post(db: db_dependency, user: user_dependency):
     """
     Cart data using post method
     """
@@ -150,19 +154,56 @@ async def cart_using_post(db:db_dependency, user:user_dependency):
 
     return cart
 
+"""
+=======================
+Checkout, Invoicing and Appointments
+=======================
+"""
 
 
-
-
-@router.get('/get_cart', tags=["Transactions"])
-async def get_cart(db: db_dependency, user: user_dependency):
+@router.post('/checkout', tags=['Checkout'])
+async def checkout(db: db_dependency, user: user_dependency):
     """
-    Get Cart for the user
+    Pre-check:
+    1. Check if a user is logged in
+    2. Check if the cart is empty
+
+    ----
+
+    1. Create Order
+    2. Copy all of the item in carts to OrderDetail
+    3. Create Appointment
+    4. Link the Appointment ID to Order
     """
+    order_id = str(uuid.uuid4())
 
-    if not user:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    all_carts = db.query(Cart).filter(
+        Cart.accountid == user['accountid']).all()
 
-    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
+    total_price = 0
+    for cart in all_carts:
+        total_price = total_price + (cart.unitprice * cart.quantity)
 
-    return cart
+    new_order = Orders(
+        orderid=order_id,
+        accountid=user['accountid'],
+        totalprice=total_price,
+        createdat=datetime.now(),
+        totalprice=total_price
+    )
+
+    db.add(new_order)
+    db.commit()
+
+    for cart in all_carts:
+        new_order_detail = OrdersDetail(
+            orderid=order_id,
+            productid=cart.productid,
+            quantity=cart.quantity,
+            unitprice=cart.unitprice
+        )
+
+        db.add(new_order_detail)
+        db.commit()
+
+    print(total_price)

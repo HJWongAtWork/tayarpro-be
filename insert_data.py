@@ -92,8 +92,8 @@ df = pd.read_csv('data/car_spec.csv')
 
 for index, row in df.iterrows():
     car = Car(
-        car_brand=row['brand'],
-        car_model=row['model'],
+        car_brand=row['brand'].lower(),
+        car_model=row['model'].lower(),
         car_year=row['year'],
         tyre_size=row['tire_size'],
         car_type=row['carType'],

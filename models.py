@@ -25,14 +25,27 @@ class User(Base):
 
 class RegisterCar(Base):
     __tablename__ = "registercar"
-    carid = Column(String(255), primary_key=True, index=True, nullable=False)
+    carid = Column(Integer, primary_key=True, autoincrement=True)
     accountid = Column(String(255), ForeignKey(
         "users.accountid"), nullable=False)
     carbrand = Column(String(255), nullable=False)
     carmodel = Column(String(255), nullable=False)
+    caryear = Column(Integer, nullable=False)
     platenumber = Column(String(255), nullable=False)
-    cartype = Column(String(255), nullable=False)
-    createdat = Column(DateTime, nullable=False)
+    tyresize = Column(String(255), nullable=True)
+    cartype = Column(String(255), nullable=True)
+    createdat = Column(DateTime, nullable=True)
+
+
+class Car(Base):
+    __tablename__ = "car_specifications"
+    # Define the column in the table
+    car_id = Column(Integer, primary_key=True, index=True)
+    car_brand = Column(String(255), nullable=False)
+    car_model = Column(String(255), nullable=False)
+    car_year = Column(Integer, nullable=False)
+    tyre_size = Column(String(255), nullable=False)
+    car_type = Column(String(255), nullable=False)
 
 
 class Feedback (Base):
@@ -144,7 +157,8 @@ class Orders (Base):
     createdat = Column(DateTime, nullable=False)
     totalprice = Column(Numeric(8, 2), nullable=False)
     appointmentid = Column(String(255), ForeignKey(
-        "appointment.appointmentid"), nullable=False)
+        "appointment.appointmentid"), nullable=True),
+    status = Column(String(255), nullable=False, default="Pending")
 
 
 class OrdersDetail(Base):
@@ -152,7 +166,7 @@ class OrdersDetail(Base):
     orderid = Column(String(255), ForeignKey("orders.orderid"),
                      primary_key=True, nullable=False)
     productid = Column(String(255), primary_key=True)
-    carid = Column(String(255), ForeignKey(
+    carid = Column(Integer, ForeignKey(
         "registercar.carid"), nullable=False)
     unitprice = Column(Numeric(15, 0), nullable=False)
     quantity = Column(Numeric(15, 0), nullable=False)
@@ -164,9 +178,11 @@ class Appointment(Base):
     appointmentid = Column(String(255), primary_key=True, nullable=False)
     accountid = Column(String(255), ForeignKey(
         "users.accountid"), nullable=False)
-    appointmentday = Column(DateTime, nullable=False)
+    appointmentdate = Column(DateTime, nullable=False)
     createdat = Column(DateTime, nullable=False)
     status = Column(String(255), nullable=False)
+    appointment_bay = Column(String(255), nullable=True)
+    
 
 
 class Invoice(Base):
@@ -178,18 +194,6 @@ class Invoice(Base):
     createdat = Column(DateTime, nullable=False)
     orderid = Column(String(255), ForeignKey("orders.orderid"), nullable=False)
     totalprice = Column(Numeric(8, 2), nullable=False)
-
-
-class Car(Base):
-    __tablename__ = "car_specifications"
-    # Define the column in the table
-
-    car_id = Column(Integer, primary_key=True, index=True)
-    car_brand = Column(String(255), nullable=False)
-    car_model = Column(String(255), nullable=False)
-    car_year = Column(Integer, nullable=False)
-    tyre_size = Column(String(255), nullable=False)
-    car_type = Column(String(255), nullable=False)
 
 
 # Base.metadata.drop_all(bind=engine)
