@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from routes.account import get_current_user, Token
 import uuid
-from datetime import datetime
+from datetime import datetime, date, time
 
 
 # Dependency
@@ -161,8 +161,23 @@ Checkout, Invoicing and Appointments
 """
 
 
+class CheckoutCarts(BaseModel):
+    """
+    Appointment Date: YYYY-MM-DD
+    Appointment Time:   HH:MM
+    Appointment Bay:   1, 2, 3, 4, 5
+    Car ID: 
+    """
+    car_id: str = Field(..., description="Car ID")
+    appointment_date: date = Field(default=date(
+        2023, 1, 24), description="Appointment Date")
+    appointment_time: time = Field(default=time(
+        14, 30), description="Appointment Time")
+    appointment_bay: int = Field(..., description="Appointment Bay")
+
+
 @router.post('/checkout', tags=['Checkout'])
-async def checkout(db: db_dependency, user: user_dependency):
+async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutCarts):
     """
     Pre-check:
     1. Check if a user is logged in
@@ -189,7 +204,6 @@ async def checkout(db: db_dependency, user: user_dependency):
         accountid=user['accountid'],
         totalprice=total_price,
         createdat=datetime.now(),
-        totalprice=total_price
     )
 
     db.add(new_order)
@@ -200,10 +214,29 @@ async def checkout(db: db_dependency, user: user_dependency):
             orderid=order_id,
             productid=cart.productid,
             quantity=cart.quantity,
-            unitprice=cart.unitprice
+            unitprice=cart.unitprice,
+            carid=checkout.car_id,
+            totalprice=(cart.unitprice * cart.quantity)
         )
 
         db.add(new_order_detail)
         db.commit()
+
+    # Empty the cart
+    db.query(Cart).filter(Cart.accountid == user['accountid']).delete()
+    db.commit()
+
+    new_appointment = Appointment(
+        appointmentid=str(uuid.uuid4()),
+        accountid=user['accountid'],
+        appointmentdate=datetime.combine(
+            checkout.appointment_date, checkout.appointment_time),
+        createdat=datetime.now(),
+        status="Pending",
+        appointment_bay=checkout.appointment_bay
+    )
+
+    db.add(new_appointment)
+    db.commit()
 
     print(total_price)

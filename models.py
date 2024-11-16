@@ -157,7 +157,7 @@ class Orders (Base):
     createdat = Column(DateTime, nullable=False)
     totalprice = Column(Numeric(8, 2), nullable=False)
     appointmentid = Column(String(255), ForeignKey(
-        "appointment.appointmentid"), nullable=True),
+        "appointment.appointmentid"), nullable=True)
     status = Column(String(255), nullable=False, default="Pending")
 
 
@@ -167,7 +167,7 @@ class OrdersDetail(Base):
                      primary_key=True, nullable=False)
     productid = Column(String(255), primary_key=True)
     carid = Column(Integer, ForeignKey(
-        "registercar.carid"), nullable=False)
+        "registercar.carid"), nullable=True)
     unitprice = Column(Numeric(15, 0), nullable=False)
     quantity = Column(Numeric(15, 0), nullable=False)
     totalprice = Column(Numeric(8, 2), nullable=False)
@@ -182,7 +182,6 @@ class Appointment(Base):
     createdat = Column(DateTime, nullable=False)
     status = Column(String(255), nullable=False)
     appointment_bay = Column(String(255), nullable=True)
-    
 
 
 class Invoice(Base):
