@@ -75,38 +75,6 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
                             detail="Could not validate user.")
 
 
-class UserUpdate(BaseModel):
-    firstname: Optional[str] = None
-    lastname: Optional[str] = None
-    phonenumber: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zipcode: Optional[str] = None
-    gender: Optional[str] = None
-    dob: Optional[date] = None
-
-
-"""
-    accountid = Column(String, primary_key=True, index=True)
-    firstname = Column(String, index=True)
-    lastname = Column(String, index=True)
-    phonenumber = Column(String, index=True)
-    email = Column(String, index=True)
-    address = Column(String, index=True)
-    state = Column(String, index=True)
-    city = Column(String, index=True)
-    zipcode = Column(String, index=True)
-    gender = Column(String, index=True)
-    fullname = Column(String, index=True)
-    password = Column(String, index=True)
-    isadmin = Column(String, index=True)
-    createdat = Column(DateTime, index=True)
-    dob = Column(Date, index=True)
-"""
-
-
 class UserRegisterRequest(BaseModel):
     username: str = Field(..., example="rahmanrom")
     firstname: str = Field(..., example="HJ")
@@ -120,7 +88,6 @@ class UserRegisterRequest(BaseModel):
     gender: str = Field(..., example="Male")
     password: str = Field(..., example="123456")
     dob: date = Field(..., example="1990-01-01")
-    password: str = Field(..., example="123456")
 
 
 # query to retrieve the password by email
@@ -154,7 +121,9 @@ async def register_user(user: UserRegisterRequest, db: db_dependency):
         zipcode=user.zipcode,
         password=bcrypt_context.hash(user.password),
         createdat=time_now,
-        dob=user.dob
+        dob=user.dob,
+        gender=user.gender,
+        fullname=f"{user.firstname} {user.lastname}"
     )
 
     db.add(new_user)
@@ -184,40 +153,60 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         return {"access_token": token, "token_type": "bearer"}
 
 
-# @router.get("/user/{email}")
-# async def get_customer_password_by_email(email: str, db: Session = Depends(get_db)):
-#     customer = db.query(User).filter(User.email == email).first()
-#     if not customer:
-#         return {"message": "Customer not found"}
-#     return {"email": customer.email, "password": customer.password}
-# @router.get("/user")
-# async def get_all_users(db: Session = Depends(get_db)):
-#     users = db.query(User).all()
-#     return users
-# # query parameter to authenticate the user
-# @router.get("/user/")
-# async def get_customer(email: str, password: str, db: Session = Depends(get_db)):
-#     customer = db.query(User).filter(
-#         User.email == email, User.password == password).first()
-#     if not customer:
-#         return {"message": "Customer not FOUND !!"}
-#     return customer
-# @router.put("/user/{accountid}")
-# async def update_user(
-#     accountid: str,
-#     user_update: UserUpdate,
-#     db: Session = Depends(get_db)
-# ):
-#     db_user = db.query(User).filter(
-#         User.accountid == accountid).first()
-#     if not db_user:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     user_data = user_update.dict(exclude_unset=True)
-#     for key, value in user_data.items():
-#         setattr(db_user, key, value)
-#     # Update fullname if firstname or lastname was changed
-#     if 'firstname' in user_data or 'lastname' in user_data:
-#         db_user.fullname = f"{db_user.firstname} {db_user.lastname}"
-#     db.commit()
-#     db.refresh(db_user)
-#     return db_user
+class UserUpdate(BaseModel):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
+    phonenumber: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zipcode: Optional[str] = None
+    gender: Optional[str] = None
+    dob: Optional[date] = None
+
+    firstname: str = Field(..., example="HJ")
+    lastname: str = Field(..., example="Wong")
+    phonenumber: str = Field(..., example="0123456789")
+    email: EmailStr = Field(..., example="rahmanrom@gmail.com")
+    address: str = Field(..., example="Jalan 1")
+    state: str = Field(..., example="Selangor")
+    city: str = Field(..., example="Petaling Jaya")
+    zipcode: str = Field(..., example="47810")
+    gender: str = Field(..., example="Male")
+    dob: date = Field(..., example="1990-01-01")
+
+
+@router.put('/update_user', tags=["User Action"])
+async def update_user(
+        user_update: UserUpdate,
+        db: db_dependency,
+        user: Annotated[dict, Depends(get_current_user)]):
+    db_user = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user_data = user_update.dict(exclude_unset=True)
+    for key, value in user_data.items():
+        setattr(db_user, key, value)
+    # Update fullname if firstname or lastname was changed
+    if 'firstname' in user_data or 'lastname' in user_data:
+        db_user.fullname = f"{db_user.firstname} {db_user.lastname}"
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+@router.put('/update_password', tags=["User Action"])
+async def update_password(
+        password: str,
+        db: db_dependency,
+        user: Annotated[dict, Depends(get_current_user)]):
+    db_user = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db_user.password = bcrypt_context.hash(password)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

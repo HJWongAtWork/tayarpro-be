@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Date, Enum, Numeric, Text
 from database import Base, engine
 from sqlalchemy.orm import relationship
+import sys
 
 
 class User(Base):
@@ -137,6 +138,7 @@ class Service(Base):
     createdby = Column(String(255), ForeignKey(
         "users.accountid"), nullable=True)
     createdat = Column(DateTime, nullable=True)
+    image_link = Column(Text, nullable=True)
 
 
 class Cart(Base):
@@ -195,5 +197,13 @@ class Invoice(Base):
     totalprice = Column(Numeric(8, 2), nullable=False)
 
 
-# Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
+if __name__ == "__main__":
+    if "--recreate" in sys.argv:
+        Base.metadata.drop_all(bind=engine)
+        print("Dropped all tables.")
+    Base.metadata.create_all(bind=engine)
+    print("Created all tables.")
+
+else:
+    Base.metadata.create_all(bind=engine)
+    print("Created all tables.")

@@ -190,12 +190,18 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     3. Create Appointment
     4. Link the Appointment ID to Order
     """
-    order_id = str(uuid.uuid4())
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
 
     all_carts = db.query(Cart).filter(
         Cart.accountid == user['accountid']).all()
 
+    if not all_carts:
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
+    order_id = str(uuid.uuid4())
     total_price = 0
+
     for cart in all_carts:
         total_price = total_price + (cart.unitprice * cart.quantity)
 
@@ -239,4 +245,9 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     db.add(new_appointment)
     db.commit()
 
-    print(total_price)
+    return {
+        "message": "Checkout successful",
+        "order_id": order_id,
+    }
+
+
