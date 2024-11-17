@@ -176,7 +176,7 @@ class CheckoutCarts(BaseModel):
     appointment_bay: int = Field(..., description="Appointment Bay")
 
 
-@router.post('/checkout', tags=['Checkout'])
+@router.post('/checkout', tags=['Checkout'], summary="Checkout the cart")
 async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutCarts):
     """
     Pre-check:
@@ -251,3 +251,37 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     }
 
 
+@router.post('/get_all_orders', tags=['Orders'])
+async def get_all_orders(db: db_dependency, user: user_dependency):
+    """
+    Get all orders
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    all_orders = db.query(Orders).filter(
+        Orders.accountid == user['accountid']).all()
+
+    return all_orders
+
+
+@router.post('/get_order_detail', tags=['Orders'])
+async def get_order_detail(db: db_dependency, user: user_dependency, order_id: str):
+    """
+    Get order detail by order_id
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    order_detail = db.query(OrdersDetail).filter(
+        OrdersDetail.orderid == order_id).all()
+
+    order = db.query(Orders).filter(Orders.orderid == order_id).first()
+
+    if not order_detail:
+        raise HTTPException(status_code=404, detail="Order not found")
+
+    return {
+        "order": order,
+        "order_detail": order_detail
+    }
