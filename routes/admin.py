@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Service, User
+from models import Service, User, Tyre
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -30,7 +30,6 @@ class ServiceRequest(BaseModel):
     cartype: str = Field(min_length=3, max_length=50)
     price: float = Field(gt=0)
     status: str = Field(min_length=3, max_length=50)
-    createdby: str = Field(min_length=3, max_length=50)
 
 
 @router.post('/add_service', tags=["Admin Action"])
@@ -46,6 +45,13 @@ async def add_service(db: db_dependency, user: user_dependency, service: Service
     if not check_admin:
         raise HTTPException(status_code=401, detail="You are not admin")
 
+    check_service = db.query(Service).filter(
+        Service.service_id == service.service_id).first()
+
+    if check_service:
+        raise HTTPException(
+            status_code=400, detail="Service ID already exists")
+
     new_service = Service(
         service_id=service.service_id,
         typeid=service.typeid,
@@ -53,11 +59,61 @@ async def add_service(db: db_dependency, user: user_dependency, service: Service
         cartype=service.cartype,
         price=service.price,
         status=service.status,
-        createdby=service.createdby,
+        createdby=user['accountid'],
         createdat=datetime.now()
     )
 
     db.add(new_service)
+    db.commit()
+
+
+class NewTyreRequests(BaseModel):
+    itemid: str = Field(min_length=3, max_length=50)
+    brandid:  str = Field(min_length=3, max_length=50)
+    description: str = Field(min_length=3, max_length=50)
+    cartype: str = Field(min_length=3, max_length=50)
+    image_link: str = Field(min_length=3, max_length=50)
+    price: float = Field(gt=0)
+    details1: str = Field(min_length=3, max_length=50)
+    details2: str = Field(min_length=3, max_length=50)
+    details3: str = Field(min_length=3, max_length=50)
+    tyresize: str = Field(min_length=3, max_length=50)
+    speedindex: str = Field(min_length=3, max_length=50)
+    loadindex: str = Field(min_length=3, max_length=50)
+    stockunit: int = Field(gt=0)
+    status: str = Field(min_length=3, max_length=50)
+
+
+@router.post('/add_tyres', tags=["Admin Action"])
+async def admin_add_products(db: db_dependency, user: user_dependency, tyre: NewTyreRequests):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_admin = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+
+    if not check_admin:
+        raise HTTPException(status_code=401, detail="You are not admin")
+
+    new_tyre = Tyre(
+        itemid=tyre.itemid,
+        productid="TYRE",
+        brandid=tyre.brandid,
+        description=tyre.description,
+        cartype=tyre.cartype,
+        image_link=tyre.image_link,
+        unitprice=tyre.price,
+        details=[tyre.details1, tyre.details2, tyre.details3],
+        tyresize=tyre.tyresize,
+        speedindex=tyre.speedindex,
+        loadindex=tyre.loadindex,
+        stockunit=tyre.stockunit,
+        status=tyre.status,
+        createdat=datetime.now(),
+        createdby=user['accountid']
+    )
+
+    db.add(new_tyre)
     db.commit()
 
 

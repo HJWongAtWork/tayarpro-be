@@ -90,14 +90,39 @@ class UserRegisterRequest(BaseModel):
     dob: date = Field(..., example="1990-01-01")
 
 
-# query to retrieve the password by email
-"""Register"""
+class UserRegisterRequestV2(BaseModel):
+    username: str = Field(..., example="rahmanrom")
+    email: EmailStr = Field(..., example="rahmanrom@gmail.com")
+    password: str = Field(..., example="123456")
+    dob: date = Field(..., example="1990-01-01")
+
+
+@router.post("/register-v2", tags=["Authentication"])
+async def register_user_v2(user: UserRegisterRequestV2, db: db_dependency):
+    """Check the user is exist or not"""
+    if db.query(User).filter(User.email == user.email).first():
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    if db.query(User).filter(User.username == user.username).first():
+        raise HTTPException(
+            status_code=400, detail="Username already registered")
+
+    accountid = str(uuid.uuid4())
+
+    new_user = User(
+        accountid=accountid,
+        username=user.username,
+        email=user.email,
+        password=bcrypt_context.hash(user.password),
+        createdat=datetime.now(),
+        dob=user.dob)
+
+    db.add(new_user)
+    db.commit()
 
 
 @router.post("/register", tags=["Authentication"])
 async def register_user(user: UserRegisterRequest, db: db_dependency):
-    time_now = datetime.now()
-
     """Check the user is exist or not"""
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -120,7 +145,7 @@ async def register_user(user: UserRegisterRequest, db: db_dependency):
         city=user.city,
         zipcode=user.zipcode,
         password=bcrypt_context.hash(user.password),
-        createdat=time_now,
+        createdat=datetime.now(),
         dob=user.dob,
         gender=user.gender,
         fullname=f"{user.firstname} {user.lastname}"
@@ -154,16 +179,6 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 
 
 class UserUpdate(BaseModel):
-    firstname: Optional[str] = None
-    lastname: Optional[str] = None
-    phonenumber: Optional[str] = None
-    email: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zipcode: Optional[str] = None
-    gender: Optional[str] = None
-    dob: Optional[date] = None
 
     firstname: str = Field(..., example="HJ")
     lastname: str = Field(..., example="Wong")
