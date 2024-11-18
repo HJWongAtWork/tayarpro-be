@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Service
+from models import Service, User
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -23,37 +23,22 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 router = APIRouter()
 
 
-"""
-For All Services Page in Frontend
-"""
-
-"""
-For /services page in frontend
-"""
 
 
-@router.get('/get_all_services', tags=["Services"])
+
+@router.get('/get_all_services', summary="List all of the services", tags=["Services"])
 async def get_all_services(db: db_dependency):
     services = db.query(Service).all()
     return services
 
-"""
-For /service/{service_id} page in frontend
-"""
 
-
-@router.get('/service/', tags=["Services"])
+@router.get('/service/',  summary="List service based on the service_id", tags=["Services"])
 async def get_service_by_id(service_id: int, db: db_dependency):
     service = db.query(Service).filter(
         Service.service_id == service_id).first()
     if not service:
         raise HTTPException(status_code=404, detail="Service not found")
     return service
-
-
-"""
-Not sure, what's the usecase
-"""
 
 
 @router.get("get_all_service_types", tags=["Services"])

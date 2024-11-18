@@ -1,15 +1,16 @@
 from models import Tyre, Service, Car
 import pandas as pd
 from database import SessionLocal
-from models import Car, Products, ServiceType
+from models import Car, Products, ServiceType, Brands
 from datetime import datetime
 
 product_ids = ["TYRE", "EOIL", "SUSP"]
 service_type_ids = ["ENGOIL", "BRKSVR", "ALGSVR",
                     "ADJSVR", "BLCSVR", "FXWSVR", "OTHSVR"]
-
+tyre_brands = ["MICH", "CONT", "BRID", "GODY"]
 
 db = SessionLocal()
+
 
 for product in product_ids:
     """
@@ -20,6 +21,16 @@ for product in product_ids:
     db.add(product)
     db.commit()
 
+
+for brand in tyre_brands:
+    """
+    Insert data into Brands Table
+    """
+
+    brand = Brands(brandid=brand,
+                   productid="TYRE")
+    db.add(brand)
+    db.commit()
 
 for service in service_type_ids:
     """
@@ -81,8 +92,8 @@ df = pd.read_csv('data/car_spec.csv')
 
 for index, row in df.iterrows():
     car = Car(
-        car_brand=row['brand'],
-        car_model=row['model'],
+        car_brand=row['brand'].lower(),
+        car_model=row['model'].lower(),
         car_year=row['year'],
         tyre_size=row['tire_size'],
         car_type=row['carType'],

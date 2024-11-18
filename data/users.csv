@@ -1,0 +1,4 @@
+accountid,firstname,lastname,username,phonenumber,email,address,state,city,zipcode,gender,fullname,password,isadmin,createdat,dob
+2c2dbdcf-f496-4b37-aae9-48101861e795,HJ,Wong,yptan,0123456789,yptan@gmail.com,Jalan 1,Selangor,Petaling Jaya,47810,Male,HJ Wong,$2b$12$eyr7OVG58P.x0ksmTFLPk.bIE0elsWloI870ZtqfL4hNhiQgGfDqu,N,2024-11-17 11:42:21.183353,1990-01-01
+5e3447ea-5b9a-4689-8c47-86867d0b92ca,HJ,Wong,rahmanrom,0123456789,rahmanrom@gmail.com,Jalan 1,Selangor,Petaling Jaya,47810,Male,HJ Wong,$2b$12$RCt/gZ.KGbE/n5BVal4NBuS/UPa/kn/t9NDWZWPrdLYH5xBaXc5Au,Y,2024-11-17 11:43:01.997875,1990-01-01
+81159e20-664d-4f2e-aadb-1f965827de0d,HJ,Wong,admin,0123456789,admin@gmail.com,Jalan 1,Selangor,Petaling Jaya,47810,Male,HJ Wong,$2b$12$wJ2IoX3rVom.PsIHaR2AXedU9sdm0r7qyLe.IiSPtQyVUs3LlZNuq,Y,2024-11-17 11:43:19.140251,1990-01-01

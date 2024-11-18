@@ -30,7 +30,7 @@ For all products page in Frontend
 """
 
 
-@router.get("/get_all_tyres", tags=["Products"])
+@router.get("/get_all_tyres", summary="Get all of the tyres", tags=["Products"])
 async def get_all_tyres(db: db_dependency):
     tyres = db.query(Tyre).all()
     return tyres
@@ -42,7 +42,7 @@ For specific product page in Frontend: -
 """
 
 
-@router.get('/get_product_by_id', tags=["Products"])
+@router.get('/get_product_by_id', summary="Get tyre based on the itemid", tags=["Products"])
 async def get_tyre_by_id(tyre_id: str, db: db_dependency):
     tyre = db.query(Tyre).filter(Tyre.itemid == tyre_id).first()
     if not tyre:
