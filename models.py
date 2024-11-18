@@ -154,7 +154,8 @@ class Invoice(Base):
 
 class Car(Base):
     __tablename__ = "car_specifications"
-    # Define the column in the table
+
+    carspecID = Column(String(255), primary_key=True, autoincrement=True)
     car_brand = Column(String(255), nullable=False)
     car_model = Column(String (255), nullable=False)
     car_year = Column(Integer, nullable=False)

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
 from fastapi.responses import RedirectResponse
-from models import CarRegistration, Car, CarCategory
+# from models import Car, CarCategory,CarRegistration
 from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
