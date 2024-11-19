@@ -285,3 +285,47 @@ async def get_order_detail(db: db_dependency, user: user_dependency, order_id: s
         "order": order,
         "order_detail": order_detail
     }
+
+
+@router.post('/update_cart_quantity/{product_id}/{new_quantity}', tags=['Cart'])
+async def update_cart_quantity(
+        product_id: str,
+        new_quantity: int,
+        db: db_dependency,
+        user: user_dependency):
+    """
+    Update cart item quantity using path parameters
+
+    Parameters:
+        - product_id: ID of the product in cart
+        - new_quantity: New quantity to set
+    """
+    try:
+        if not user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        if new_quantity < 1:
+            raise HTTPException(
+                status_code=400,
+                detail="Quantity must be greater than 0"
+            )
+
+        cart_item = db.query(Cart).filter(
+            Cart.accountid == user['accountid'],
+            Cart.productid == product_id
+        ).first()
+
+        if not cart_item:
+            raise HTTPException(status_code=404, detail="Cart item not found")
+
+        cart_item.quantity = new_quantity
+        db.commit()
+
+        return {
+            "message": "Cart quantity updated",
+            "product_id": product_id,
+            "quantity": new_quantity
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
