@@ -143,7 +143,7 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
     }
 
 
-@router.post('/get_cart', tags=['Cart'])
+@router.get('/get_cart', tags=['Cart'])
 async def cart_using_post(db: db_dependency, user: user_dependency):
     """
     Cart data using post method
