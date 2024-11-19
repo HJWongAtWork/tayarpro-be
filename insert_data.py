@@ -5,32 +5,41 @@ from models import Car, Products, ServiceType, Brands
 from datetime import datetime
 
 product_ids = ["TYRE", "EOIL", "SUSP"]
+product_description = ["Tyre", "Engine Oil", "Suspension"]
 service_type_ids = ["ENGOIL", "BRKSVR", "ALGSVR",
                     "ADJSVR", "BLCSVR", "FXWSVR", "OTHSVR"]
 tyre_brands = ["MICH", "CONT", "BRID", "GODY"]
+tyre_description = ["Michelin", "Continental", "Bridgestone", "Goodyear"]
+
 
 db = SessionLocal()
 
-
-for product in product_ids:
+for idx, product in enumerate(product_ids):
     """
     Insert data into Products Table
     """
 
-    product = Products(productid=product)
+    product = Products(productid=product,
+                       description=product_description[idx],
+                       status="Active",
+                       createdat=datetime.now())
     db.add(product)
     db.commit()
 
 
-for brand in tyre_brands:
+for idx, brand in enumerate(tyre_brands):
     """
     Insert data into Brands Table
     """
 
     brand = Brands(brandid=brand,
-                   productid="TYRE")
+                   productid="TYRE",
+                   description=tyre_description[idx],
+                   status="Active",
+                   createdat=datetime.now())
     db.add(brand)
     db.commit()
+
 
 for service in service_type_ids:
     """
