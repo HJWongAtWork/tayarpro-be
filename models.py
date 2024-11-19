@@ -194,6 +194,17 @@ class Invoice(Base):
     orderid = Column(String(255), ForeignKey("orders.orderid"), nullable=False)
     totalprice = Column(Numeric(8, 2), nullable=False)
 
+<<<<<<< HEAD
+class Car(Base):
+    __tablename__ = "car_specifications"
+
+    carspecID = Column(String(255), primary_key=True, autoincrement=True)
+    car_brand = Column(String(255), nullable=False)
+    car_model = Column(String (255), nullable=False)
+    car_year = Column(Integer, nullable=False)
+    tyre_size = Column(String (255), nullable=False)
+    car_type = Column(String (255), nullable=False)
+=======
 
 if __name__ == "__main__":
     if "--recreate" in sys.argv:
@@ -205,3 +216,4 @@ if __name__ == "__main__":
 else:
     Base.metadata.create_all(bind=engine)
     print("Created all tables.")
+>>>>>>> d238d251d09426c99435272c6428a21aa272d992

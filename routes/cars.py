@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
 from fastapi.responses import RedirectResponse
+<<<<<<< HEAD
+# from models import Car, CarCategory,CarRegistration
+=======
 from models import RegisterCar, Car
+>>>>>>> d238d251d09426c99435272c6428a21aa272d992
 from database import SessionLocal
 from typing import Annotated, Optional
 from sqlalchemy.orm import Session
