@@ -91,39 +91,43 @@ class UserRegisterRequest(BaseModel):
 
 
 class UserRegisterRequestV2(BaseModel):
-    username: str = Field(..., example="rahmanrom")
     email: EmailStr = Field(..., example="rahmanrom@gmail.com")
     password: str = Field(..., example="123456")
-    dob: date = Field(..., example="1990-01-01")
+    first_name: str = Field(..., example="HJ")
+    last_name: str = Field(..., example="Wong")
 
 
 @router.post("/register-v2", tags=["Authentication"])
 async def register_user_v2(user: UserRegisterRequestV2, db: db_dependency):
-    """Check the user is exist or not"""
+    """
+    Important Point:
+
+    Date is in ISO 8601 Format (Recommended): 1990-12-31 (Year-Month-Day)
+    """
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
-
-    if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(
-            status_code=400, detail="Username already registered")
 
     accountid = str(uuid.uuid4())
 
     new_user = User(
         accountid=accountid,
-        username=user.username,
+        firstname=user.first_name,
+        lastname=user.last_name,
+        username=user.email,
         email=user.email,
         password=bcrypt_context.hash(user.password),
-        createdat=datetime.now(),
-        dob=user.dob)
-
+        createdat=datetime.now())
     db.add(new_user)
     db.commit()
 
 
 @router.post("/register", tags=["Authentication"])
 async def register_user(user: UserRegisterRequest, db: db_dependency):
-    """Check the user is exist or not"""
+    """
+    Important Point:
+
+    Date is in ISO 8601 Format (Recommended): 1990-12-31 (Year-Month-Day)
+    """
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 

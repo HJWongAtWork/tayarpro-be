@@ -21,7 +21,6 @@ class User(Base):
     password = Column(String(255), nullable=False)
     isadmin = Column(String(255), default="N", nullable=False)
     createdat = Column(DateTime, nullable=False)
-    dob = Column(Date, nullable=False)
 
 
 class RegisterCar(Base):
@@ -158,6 +157,7 @@ class Orders (Base):
     totalprice = Column(Numeric(8, 2), nullable=False)
     appointmentid = Column(String(255), ForeignKey(
         "appointment.appointmentid"), nullable=True)
+    # Pending, Completed, Cancelled
     status = Column(String(255), nullable=False, default="Pending")
 
 
