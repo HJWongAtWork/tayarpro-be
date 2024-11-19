@@ -341,3 +341,37 @@ async def update_cart_quantity(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete('/delete_cart_item/{product_id}', tags=['Cart'])
+async def delete_cart_item(
+        product_id: str,
+        db: db_dependency,
+        user: user_dependency):
+    """
+    Remove an item from the cart
+
+    Parameters:
+        - product_id: ID of the product to remove from cart
+    Returns:
+    """
+    try:
+        if not user:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+
+        cart_item = db.query(Cart).filter(
+            Cart.accountid == user['accountid'],
+            Cart.productid == product_id
+        ).first()
+
+        if not cart_item:
+            raise HTTPException(status_code=404, detail="Cart item not found")
+
+        db.delete(cart_item)
+        db.commit()
+
+        return {"message": "Cart item deleted",
+                "product_id": product_id}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
