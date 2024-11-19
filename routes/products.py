@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Products, Tyre, Brands
+from models import Products, Tyre, Brands, Products
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -70,7 +70,7 @@ async def get_brands(db: Session = Depends(get_db)):
 #     return tyre
 
 
-# @router.get("/products")
-# def get_products(db: Session = Depends(get_db)):
-#     products = db.query(models.Products).all()
-#     return products
+@router.get("/products")
+def get_products(db: Session = Depends(get_db)):
+    products = db.query(Products).all()
+    return products
