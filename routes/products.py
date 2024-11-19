@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Products, Tyre
+from models import Products, Tyre, Brands
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -50,6 +50,12 @@ async def get_tyre_by_id(tyre_id: str, db: db_dependency):
     return tyre
 
 
+@router.get("/brands", tags=["Products"])
+async def get_brands(db: Session = Depends(get_db)):
+    brands = db.query(Brands).all()
+    return brands
+
+
 # @router.get("/tyre")
 # def get_tyre(db: Session = Depends(get_db)):
 #     tyre = db.query(models.Tyre).all()
@@ -68,9 +74,3 @@ async def get_tyre_by_id(tyre_id: str, db: db_dependency):
 # def get_products(db: Session = Depends(get_db)):
 #     products = db.query(models.Products).all()
 #     return products
-
-
-# @router.get("/brands")
-# async def get_brands(db: Session = Depends(get_db)):
-#     brands = db.query(models.Brands).all()
-#     return brands
