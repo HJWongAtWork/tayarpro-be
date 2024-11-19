@@ -147,6 +147,42 @@ async def give_admin_rights(db: db_dependency, user: user_dependency, accountid:
         User.accountid == accountid).first()
 
     user.is_admin = 'Y'
+    db.commit()
+
+
+class ServiceUpdateRequest(BaseModel):
+    typeid: str = Field(min_length=3, max_length=50)
+    description: str = Field(min_length=3, max_length=50)
+    cartype: str = Field(min_length=3, max_length=50)
+    price: float = Field(gt=0)
+    status: str = Field(min_length=3, max_length=50)
+
+
+@router.put('/edit_service', tags=["Admin Action"])
+async def edit_service(db: db_dependency, user: user_dependency, service: ServiceRequest):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_admin = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+
+    if not check_admin:
+        raise HTTPException(status_code=401, detail="You are not admin")
+
+    service = db.query(Service).filter(
+        Service.service_id == service.service_id).first()
+
+    if not service:
+        raise HTTPException(status_code=404, detail="Service not found")
+
+    service.typeid = service.typeid
+    service.description = service.description
+    service.cartype = service.cartype
+    service.price = service.price
+    service.status = service.status
+    db.commit()
+
+
 """
 TODO:
 

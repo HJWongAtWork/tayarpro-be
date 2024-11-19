@@ -70,7 +70,7 @@ async def get_brands(db: Session = Depends(get_db)):
 #     return tyre
 
 
-@router.get("/products")
+@router.get("/products", tags=["Products"])
 def get_products(db: Session = Depends(get_db)):
     products = db.query(Products).all()
     return products
