@@ -163,6 +163,50 @@ async def update_car(db: db_dependency, user: user_dependency, car_request: CarU
         "message": "Car details successfully updated"
     }
 
+
+@router.get('/car_brands', summary="Get all car brands", tags=["Cars"])
+async def get_car_brands(db: db_dependency):
+    car_brands_tuples = db.query(Car.car_brand).distinct().all()
+    car_brands = [brand[0] for brand in car_brands_tuples]
+
+    return {
+        "car_brands": car_brands
+    }
+
+
+@router.get('/car_models/{car_brand}', summary="Get all car models by brand", tags=["Cars"])
+async def get_car_models(db: db_dependency, car_brand: str = Path(...)):
+    car_models = db.query(Car.car_model).filter(
+        Car.car_brand == car_brand).distinct().all()
+
+    return {
+        "car_models": [model[0] for model in car_models]
+    }
+
+
+@router.get('/car_models', summary="Get all car models", tags=["Cars"])
+async def get_all_car_models(db: db_dependency):
+    car_models = db.query(Car.car_model).distinct().all()
+    return {
+        "car_models": [model[0] for model in car_models]
+    }
+
+
+@router.get('/tyre_sizes', summary="Get all tyre sizes", tags=["Cars"])
+async def get_tyre_sizes(db: db_dependency):
+    tyre_sizes = db.query(Car.tyre_size).distinct().all()
+    return {
+        "tyre_sizes": [size[0] for size in tyre_sizes]
+    }
+
+
+@router.get('/car_years', summary="Get all car years", tags=["Cars"])
+async def get_car_years(db: db_dependency):
+    car_years = db.query(Car.car_year).distinct().all()
+    return {
+        "car_years": [year[0] for year in car_years]
+    }
+
     # # Helper function to retrieve a car or raise 404
     # def get_car_or_404(db: Session, car_id: int):
     #     car = db.query(Car).filter(Car.carspecID == car_id).first()
