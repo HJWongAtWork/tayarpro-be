@@ -229,3 +229,14 @@ async def update_password(
     db.commit()
     db.refresh(db_user)
     return db_user
+
+class UsernameRequest(BaseModel):
+    username :str
+
+@router.post("/users/username", tags=["User Action"])
+async def get_password_by_username(request: UsernameRequest, db:db_dependency):
+    username = request.username
+    user= db.query(User).filter(User.username == username).first()
+    if not user: 
+        raise HTTPException(status_code=404, detail = "User not found")
+    return {"username":user.username, "password":user.password}
