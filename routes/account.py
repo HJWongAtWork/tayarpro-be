@@ -120,6 +120,11 @@ async def register_user_v2(user: UserRegisterRequestV2, db: db_dependency):
     db.add(new_user)
     db.commit()
 
+    return {
+        "message": "User successfully registered",
+        "user_info": new_user.to_dict()  # Use the to_dict method
+    }
+
 
 @router.post("/register", tags=["Authentication"])
 async def register_user(user: UserRegisterRequest, db: db_dependency):
@@ -158,7 +163,10 @@ async def register_user(user: UserRegisterRequest, db: db_dependency):
     db.add(new_user)
     db.commit()
 
-    return user
+    return {
+        "message": "User successfully registered",
+        "user_info": new_user
+    }
 
 
 class Token(BaseModel):
@@ -166,7 +174,7 @@ class Token(BaseModel):
     token_type: str
 
 
-@router.post("/login", response_model=Token, tags=["Authentication"])
+@router.post("/login", tags=["Authentication"])
 async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                 db: db_dependency):
 
@@ -179,7 +187,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         token = create_access_token(
             user.username, user.accountid, timedelta(minutes=60))
 
-        return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "user_info": user.to_dict()}
 
 
 class UserUpdate(BaseModel):

@@ -22,6 +22,15 @@ class User(Base):
     isadmin = Column(String(255), default="N", nullable=False)
     createdat = Column(DateTime, nullable=False)
 
+    def to_dict(self):
+        return {
+            "accountid": self.accountid,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "username": self.username,
+            "phonenumber": self.phonenumber,
+            "email": self.email}
+
 
 class RegisterCar(Base):
     __tablename__ = "registercar"
@@ -105,7 +114,7 @@ class Tyre(Base):
     speedindex = Column(String(255), nullable=False)
     loadindex = Column(Numeric(15), nullable=False)
     stockunit = Column(Numeric(15), nullable=False)
-    status = Column(String(255), nullable=False)
+    status = Column(String(255), nullable=False, default="Active")
     createdby = Column(String(255), ForeignKey(
         "users.accountid"), nullable=True)
     createdat = Column(DateTime, nullable=True)
@@ -154,7 +163,7 @@ class Orders (Base):
     accountid = Column(String(255), ForeignKey(
         "users.accountid"), nullable=False)
     createdat = Column(DateTime, nullable=False)
-    totalprice = Column(Numeric(8, 2), nullable=False)
+    totalprice = Column(Numeric(8, 2), nullable=True)
     appointmentid = Column(String(255), ForeignKey(
         "appointment.appointmentid"), nullable=True)
     # Pending, Completed, Cancelled
@@ -195,6 +204,18 @@ class Invoice(Base):
     totalprice = Column(Numeric(8, 2), nullable=False)
 
 
+class Notification(Base):
+    __tablename__ = "notification"
+    notificationid = Column(String(255), primary_key=True, nullable=False)
+    accountid = Column(String(255), ForeignKey(
+        "users.accountid"), nullable=True)
+    message = Column(String(255), nullable=False)
+    createdat = Column(DateTime, nullable=False)
+    status = Column(String(255), nullable=False)
+    category = Column(String(255), nullable=False)
+    icon = Column(String(255), nullable=False)
+
+
 if __name__ == "__main__":
     if "--recreate" in sys.argv:
         Base.metadata.drop_all(bind=engine)
@@ -205,3 +226,24 @@ if __name__ == "__main__":
 else:
     Base.metadata.create_all(bind=engine)
     print("Created all tables.")
+
+
+"""
+TODO:
+
+1. In Cart and OrderDetails: Put Category: Tyre or Service
+
+
+
+Notification: -
+
+1. Everytime Checkout is done: 
+    - Check stocks. If less than 10 add notification data
+    - Add notification data for new orders
+
+
+2. Everytime registration is done:
+    - Add notification data for new registration
+
+
+"""
