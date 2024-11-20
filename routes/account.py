@@ -126,47 +126,47 @@ async def register_user_v2(user: UserRegisterRequestV2, db: db_dependency):
     }
 
 
-@router.post("/register", tags=["Authentication"])
-async def register_user(user: UserRegisterRequest, db: db_dependency):
-    """
-    Important Point:
+# @router.post("/register", tags=["Authentication"])
+# async def register_user(user: UserRegisterRequest, db: db_dependency):
+#     """
+#     Important Point:
 
-    Date is in ISO 8601 Format (Recommended): 1990-12-31 (Year-Month-Day)
-    """
-    if db.query(User).filter(User.email == user.email).first():
-        raise HTTPException(status_code=400, detail="Email already registered")
+#     Date is in ISO 8601 Format (Recommended): 1990-12-31 (Year-Month-Day)
+#     """
+#     if db.query(User).filter(User.email == user.email).first():
+#         raise HTTPException(status_code=400, detail="Email already registered")
 
-    if db.query(User).filter(User.username == user.username).first():
-        raise HTTPException(
-            status_code=400, detail="Username already registered")
+#     if db.query(User).filter(User.username == user.username).first():
+#         raise HTTPException(
+#             status_code=400, detail="Username already registered")
 
-    accountid = str(uuid.uuid4())
+#     accountid = str(uuid.uuid4())
 
-    new_user = User(
-        accountid=accountid,
-        username=user.username,
-        firstname=user.firstname,
-        lastname=user.lastname,
-        phonenumber=user.phonenumber,
-        email=user.email,
-        address=user.address,
-        state=user.state,
-        city=user.city,
-        zipcode=user.zipcode,
-        password=bcrypt_context.hash(user.password),
-        createdat=datetime.now(),
-        dob=user.dob,
-        gender=user.gender,
-        fullname=f"{user.firstname} {user.lastname}"
-    )
+#     new_user = User(
+#         accountid=accountid,
+#         username=user.username,
+#         firstname=user.firstname,
+#         lastname=user.lastname,
+#         phonenumber=user.phonenumber,
+#         email=user.email,
+#         address=user.address,
+#         state=user.state,
+#         city=user.city,
+#         zipcode=user.zipcode,
+#         password=bcrypt_context.hash(user.password),
+#         createdat=datetime.now(),
+#         dob=user.dob,
+#         gender=user.gender,
+#         fullname=f"{user.firstname} {user.lastname}"
+#     )
 
-    db.add(new_user)
-    db.commit()
+#     db.add(new_user)
+#     db.commit()
 
-    return {
-        "message": "User successfully registered",
-        "user_info": new_user
-    }
+#     return {
+#         "message": "User successfully registered",
+#         "user_info": new_user
+#     }
 
 
 class Token(BaseModel):
