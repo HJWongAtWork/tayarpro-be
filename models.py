@@ -21,6 +21,7 @@ class User(Base):
     password = Column(String(255), nullable=False)
     isadmin = Column(String(255), default="N", nullable=False)
     createdat = Column(DateTime, nullable=False)
+    isActive = Column(String(255), nullable=False, default="Y")
 
     def to_dict(self):
         return {
@@ -44,6 +45,7 @@ class RegisterCar(Base):
     tyresize = Column(String(255), nullable=True)
     cartype = Column(String(255), nullable=True)
     createdat = Column(DateTime, nullable=True)
+    isActive = Column(String(255), nullable=False, default="Y")
 
 
 class Car(Base):

@@ -17,7 +17,7 @@ app = FastAPI(title="TayarPro API",
 # Allow requests from any origin
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # This allows all origins
+    allow_origins=["*"],  # This allows all origins
     allow_credentials=True,
     allow_methods=["*"],  # This allows all HTTP methods
     allow_headers=["*"],  # This allows all headers

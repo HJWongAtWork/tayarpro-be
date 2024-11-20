@@ -52,10 +52,12 @@ async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
     """
     Add Tyre Size Optional to CarRequest
     """
+
     find_car = db.query(RegisterCar).filter(
         and_(
             RegisterCar.accountid == user['accountid'],
-            RegisterCar.platenumber == car.plate_number.lower().replace(" ", "")
+            RegisterCar.platenumber == car.plate_number.lower().replace(" ", ""),
+            RegisterCar.isActive == "Y"
         )
     ).first()
 
@@ -84,9 +86,82 @@ async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
 async def view_car(db: db_dependency, user: user_dependency):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
+
     car = db.query(RegisterCar).filter(
-        RegisterCar.accountid == user["accountid"]).all()
+        and_(
+            RegisterCar.accountid == user["accountid"],
+            RegisterCar.isActive == "Y"
+        )
+    ).all()
+
     return car
+
+
+class CarStatus(BaseModel):
+    car_id: int = Field(gt=0)
+
+
+@router.post('/change_car_status', summary="Change car status", tags=["Cars"])
+async def change_car_status(db: db_dependency, user: user_dependency, car_requests: CarStatus):
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    car = db.query(RegisterCar).filter(
+        and_(
+            RegisterCar.accountid == user["accountid"],
+            RegisterCar.carid == car_requests.car_id
+        )
+    ).first()
+
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+
+    car.isActive = "N"
+    db.add(car)
+    db.commit()
+
+    return {
+        "message": "Car status successfully changed"
+    }
+
+
+class CarUpdateRequests(BaseModel):
+    car_id: int = Field(gt=0)
+    car_brand: str = Field(min_length=3, max_length=50)
+    car_model: str = Field(min_length=3, max_length=50)
+    car_type: CarTypeEnum
+    car_year: int = Field(gt=0)
+    tyre_size: Optional[str] = Field(None, min_length=3, max_length=50)
+
+
+@router.put('/update_car', summary="Update car details", tags=["Cars"])
+async def update_car(db: db_dependency, user: user_dependency, car_request: CarUpdateRequests):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    car = db.query(RegisterCar).filter(
+        and_(
+            RegisterCar.accountid == user["accountid"],
+            RegisterCar.carid == car_request.car_id
+        )
+    ).first()
+
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+
+    car.carbrand = car_request.car_brand
+    car.carmodel = car_request.car_model
+    car.caryear = car_request.car_year
+    car.tyresize = car_request.tyre_size
+    car.cartype = car_request.car_type
+
+    db.add(car)
+    db.commit()
+
+    return {
+        "message": "Car details successfully updated"
+    }
 
     # # Helper function to retrieve a car or raise 404
     # def get_car_or_404(db: Session, car_id: int):
