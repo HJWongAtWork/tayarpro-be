@@ -195,6 +195,7 @@ class UserUpdate(BaseModel):
     firstname: str = Field(..., example="HJ")
     lastname: str = Field(..., example="Wong")
     email: EmailStr = Field(..., example="rahmanrom@gmail.com")
+    phone_number: str = Field(..., example="0123456789")
 
 
 @router.put('/update_user', tags=["User Action"])
@@ -215,6 +216,7 @@ async def update_user(
     if check_user.email == user_update.email:
         check_user.firstname = user_update.firstname
         check_user.lastname = user_update.lastname
+        check_user.phonenumber = user_update.phone_number
 
     else:
         if db.query(User).filter(User.email == user_update.email).first():
@@ -225,6 +227,7 @@ async def update_user(
         check_user.lastname = user_update.lastname
         check_user.email = user_update.email
         check_user.username = user_update.email
+        check_user.phonenumber = user_update.phone_number
 
     db.commit()
     db.refresh(check_user)

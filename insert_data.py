@@ -4,8 +4,8 @@ from database import SessionLocal
 from models import Car, Products, ServiceType, Brands
 from datetime import datetime
 
-product_ids = ["TYRE", "EOIL", "SUSP"]
-product_description = ["Tyre", "Engine Oil", "Suspension"]
+product_ids = ["TYRE"]
+product_description = ["Tyre"]
 service_type_ids = ["ENGOIL", "BRKSVR", "ALGSVR",
                     "ADJSVR", "BLCSVR", "FXWSVR", "OTHSVR"]
 
