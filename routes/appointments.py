@@ -35,7 +35,6 @@ async def get_appointment(user: user_dependency, db: db_dependency, appointment:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     check_appointment = db.query(Appointment).filter(
-        Appointment.appointmentid == appointment.appointment_id,
         Appointment.accountid == user['accountid']).first()
 
     if not check_appointment:
