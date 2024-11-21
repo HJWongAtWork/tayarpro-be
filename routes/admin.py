@@ -160,7 +160,9 @@ async def all_users(db: db_dependency, user: user_dependency):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     check_admin = db.query(User).filter(
-        User.accountid == user['accountid']).first()
+        User.accountid == user['accountid'],
+        User.isAdmin == 'Y'
+    ).first()
 
     if not check_admin:
         raise HTTPException(status_code=401, detail="You are not admin")
@@ -183,8 +185,15 @@ async def give_admin_rights(db: db_dependency, user: user_dependency, accountid:
     user = db.query(User).filter(
         User.accountid == accountid).first()
 
-    user.is_admin = 'Y'
+    user.isAdmin = 'Y'
+
     db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Admin rights given",
+        "user": user
+    }
 
 
 @router.put('/edit_service', tags=["Admin Action"])

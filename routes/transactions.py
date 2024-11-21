@@ -143,6 +143,18 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
     }
 
 
+@router.get('/get_cart', tags=['Cart'])
+async def cart_using_get(db: db_dependency, user: user_dependency):
+    """
+    Cart data using get method
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
+
+    return cart
+
+
 @router.post('/get_cart', tags=['Cart'])
 async def cart_using_post(db: db_dependency, user: user_dependency):
     """

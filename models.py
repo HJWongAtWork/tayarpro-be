@@ -19,7 +19,7 @@ class User(Base):
     gender = Column(String(255), nullable=True)
     fullname = Column(String(255), nullable=True)
     password = Column(String(255), nullable=False)
-    isadmin = Column(String(255), default="N", nullable=False)
+    isAdmin = Column(String(255), default="N", nullable=False)
     createdat = Column(DateTime, nullable=False)
     isActive = Column(String(255), nullable=False, default="Y")
 
