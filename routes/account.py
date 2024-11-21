@@ -195,7 +195,7 @@ class UserUpdate(BaseModel):
     firstname: str = Field(..., example="HJ")
     lastname: str = Field(..., example="Wong")
     email: EmailStr = Field(..., example="rahmanrom@gmail.com")
-    phone_number: str = Field(..., example="0123456789")
+    phone_number: int = Field(..., example="0123456789")
 
 
 @router.put('/update_user', tags=["User Action"])
