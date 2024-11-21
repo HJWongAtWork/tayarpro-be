@@ -28,6 +28,7 @@ router = APIRouter()
 class CarTypeEnum(str, Enum):
     SUV = "SUV"
     Passenger = "Passenger"
+    Unsure = "Unsure"
 
 
 class CarRegistrationRequest(BaseModel):

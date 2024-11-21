@@ -8,6 +8,11 @@ product_ids = ["TYRE", "EOIL", "SUSP"]
 product_description = ["Tyre", "Engine Oil", "Suspension"]
 service_type_ids = ["ENGOIL", "BRKSVR", "ALGSVR",
                     "ADJSVR", "BLCSVR", "FXWSVR", "OTHSVR"]
+
+
+service_type_description = ["Engine Oil Service", "Brake Service", "Alignment Service",
+                            "Adjustment Service", "Balancing Service", "Fixing Service", "Other Service"]
+
 tyre_brands = ["MICH", "CONT", "BRID", "GODY"]
 tyre_description = ["Michelin", "Continental", "Bridgestone", "Goodyear"]
 
@@ -41,12 +46,15 @@ for idx, brand in enumerate(tyre_brands):
     db.commit()
 
 
-for service in service_type_ids:
+for idx, service in enumerate(service_type_ids):
     """
     Insert data into ServiceType Table
     """
 
-    service = ServiceType(typeid=service)
+    service = ServiceType(typeid=service,
+                          description=service_type_description[idx],
+                          status="Active",
+                          createdat=datetime.now())
     db.add(service)
     db.commit()
 
