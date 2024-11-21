@@ -30,7 +30,7 @@ class AppointmentRequest(BaseModel):
 
 
 @router.post('/get_appointment', tags=["Appointments"], summary="Get appointment based on the appointment_id")
-async def get_appointment(user: user_dependency, db: db_dependency, appointment: AppointmentRequest):
+async def get_appointment(user: user_dependency, db: db_dependency):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
