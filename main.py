@@ -10,6 +10,7 @@ import routes.checkout as checkout
 import routes.account as account
 import routes.transactions as transactions
 import routes.admin as admin
+import routes.appointments as appointments
 
 app = FastAPI(title="TayarPro API",
               description="API for TayarPro", version="1.0.0")
@@ -33,6 +34,7 @@ app.include_router(services.router)
 app.include_router(cars.router)
 app.include_router(transactions.router)
 app.include_router(admin.router)
+app.include_router(appointments.router)
 # app.include_router(cart.router)
 # app.include_router(checkout.router)
 

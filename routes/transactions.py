@@ -277,6 +277,7 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     return {
         "message": "Checkout successful",
         "order_id": order_id,
+        "appointment_id": new_appointment.appointmentid
     }
 
 
