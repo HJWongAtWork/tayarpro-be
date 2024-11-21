@@ -194,14 +194,7 @@ class UserUpdate(BaseModel):
 
     firstname: str = Field(..., example="HJ")
     lastname: str = Field(..., example="Wong")
-    phonenumber: str = Field(..., example="0123456789")
     email: EmailStr = Field(..., example="rahmanrom@gmail.com")
-    address: str = Field(..., example="Jalan 1")
-    state: str = Field(..., example="Selangor")
-    city: str = Field(..., example="Petaling Jaya")
-    zipcode: str = Field(..., example="47810")
-    gender: str = Field(..., example="Male")
-    dob: date = Field(..., example="1990-01-01")
 
 
 @router.put('/update_user', tags=["User Action"])
@@ -209,19 +202,33 @@ async def update_user(
         user_update: UserUpdate,
         db: db_dependency,
         user: Annotated[dict, Depends(get_current_user)]):
-    db_user = db.query(User).filter(
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_user = db.query(User).filter(
         User.accountid == user['accountid']).first()
-    if not db_user:
+
+    if not check_user:
         raise HTTPException(status_code=404, detail="User not found")
-    user_data = user_update.dict(exclude_unset=True)
-    for key, value in user_data.items():
-        setattr(db_user, key, value)
-    # Update fullname if firstname or lastname was changed
-    if 'firstname' in user_data or 'lastname' in user_data:
-        db_user.fullname = f"{db_user.firstname} {db_user.lastname}"
+
+    if check_user.email == user_update.email:
+        check_user.firstname = user_update.firstname
+        check_user.lastname = user_update.lastname
+
+    else:
+        if db.query(User).filter(User.email == user_update.email).first():
+            raise HTTPException(
+                status_code=400, detail="Email already registered")
+
+        check_user.firstname = user_update.firstname
+        check_user.lastname = user_update.lastname
+        check_user.email = user_update.email
+        check_user.username = user_update.email
+
     db.commit()
-    db.refresh(db_user)
-    return db_user
+    db.refresh(check_user)
+    return check_user
 
 
 @router.put('/update_password', tags=["User Action"])
