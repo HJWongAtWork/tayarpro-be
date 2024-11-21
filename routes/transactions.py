@@ -387,3 +387,17 @@ async def delete_cart_item(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post('/get_carts_by_details', tags=['Cart'])
+async def get_carts_by_details(db: db_dependency, user: user_dependency, accountid: str, productid: str):
+    """
+    Get all carts by details
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    all_carts = db.query(Cart).filter(
+        Cart.accountid == accountid, Cart.productid == productid).all()
+
+    return all_carts
