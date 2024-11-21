@@ -191,6 +191,7 @@ class Appointment(Base):
         "users.accountid"), nullable=False)
     appointmentdate = Column(DateTime, nullable=False)
     createdat = Column(DateTime, nullable=False)
+    # Completed, Cancelled, Future
     status = Column(String(255), nullable=False)
     appointment_bay = Column(String(255), nullable=True)
 

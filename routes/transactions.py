@@ -269,6 +269,11 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     db.add(new_appointment)
     db.commit()
 
+    # Update the order with the appointment ID
+    db.query(Orders).filter(Orders.orderid == order_id).update(
+        {"appointmentid": new_appointment.appointmentid})
+    db.commit()
+
     return {
         "message": "Checkout successful",
         "order_id": order_id,
