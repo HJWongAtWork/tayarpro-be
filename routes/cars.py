@@ -37,11 +37,11 @@ class CarRegistrationRequest(BaseModel):
 
 
 class CarRequest(BaseModel):
-    plate_number: str = Field(min_length=3, max_length=50)
-    car_brand: str = Field(min_length=3, max_length=50)
-    car_model: str = Field(min_length=3, max_length=50)
+    plate_number: str = Field(min_length=1, max_length=50)
+    car_brand: str = Field(min_length=1, max_length=50)
+    car_model: str = Field(min_length=1, max_length=50)
     car_type: CarTypeEnum
-    car_year: int = Field(gt=0)
+    car_year: int = Field(gt=1980)
     tyre_size: Optional[str] = Field(None, min_length=3, max_length=50)
 
 
@@ -129,11 +129,11 @@ async def change_car_status(db: db_dependency, user: user_dependency, car_reques
 
 class CarUpdateRequests(BaseModel):
     car_id: int = Field(gt=0)
-    car_brand: str = Field(min_length=3, max_length=50)
-    car_model: str = Field(min_length=3, max_length=50)
+    car_brand: str = Field(min_length=1, max_length=50)
+    car_model: str = Field(min_length=1, max_length=50)
     car_type: CarTypeEnum
     car_year: int = Field(gt=0)
-    tyre_size: Optional[str] = Field(None, min_length=3, max_length=50)
+    tyre_size: Optional[str] = Field(None, min_length=1, max_length=50)
 
 
 @router.put('/update_car', summary="Update car details", tags=["Cars"])
