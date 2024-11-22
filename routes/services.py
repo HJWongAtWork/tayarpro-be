@@ -52,7 +52,16 @@ async def get_service_by_type(service_type: str, db: db_dependency):
         raise HTTPException(status_code=404, detail="Service not found")
     return service
 
-    # @router.get("/service")
+
+@router.get("/service", tags=["Services"])
+async def get_service_by_description(description: str, db: db_dependency):
+    services = db.query(Service).filter(
+        Service.description == description).all()
+    if not services:
+        return {"message": "Service not found"}
+    return services
+
+   # @router.get("/service")
     # def get_service(db:Session = Depends(get_db)):
     #     service =db.query(models.Service).all()
     #     return service
@@ -75,13 +84,3 @@ async def get_service_by_type(service_type: str, db: db_dependency):
     #     if not service:
     #         return {"message": "Service not found"}
     #     return service
-
-
-
-# by kai
-@router.get("/service/{serviceDescription}")
-async def get_service_by_id(serviceDescription: str, db: db_dependency):
-    services = db.query(Service).filter(Service.description == serviceDescription).all()
-    if not services:
-        return {"message": "Service not found"}
-    return services
