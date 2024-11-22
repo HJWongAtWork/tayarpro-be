@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Appointment
+from models import Appointment, Orders, OrdersDetail
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -25,19 +25,36 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 router = APIRouter()
 
 
-class AppointmentRequest(BaseModel):
-    appointment_id: str = Field(min_length=3, max_length=50)
-
-
-@router.post('/get_appointment', tags=["Appointments"], summary="Get appointment based on the appointment_id")
+@router.post('/get_appointment', tags=["Appointments"])
 async def get_appointment(user: user_dependency, db: db_dependency):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    check_appointment = db.query(Appointment).filter(
-        Appointment.accountid == user['accountid'])
+    appointments = db.query(Appointment).filter(
+        Appointment.accountid == user['accountid']).all()
+    return appointments
 
-    if not check_appointment:
+
+@router.post('/get_appointment/{appointment_id}', tags=["Appointments"])
+async def get_appointment_by_id(appointment_id: str, user: user_dependency, db: db_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    appointment = db.query(Appointment).filter(
+        Appointment.appointmentid == appointment_id,
+        Appointment.accountid == user['accountid']).first()
+
+    order = db.query(Orders).filter(
+        Orders.appointmentid == appointment_id).first()
+
+    order_detail = db.query(OrdersDetail).filter(
+        OrdersDetail.orderid == order.orderid).all()
+
+    if not appointment:
         raise HTTPException(status_code=404, detail="Appointment not found")
 
-    return check_appointment
+    return {
+        "appointment": appointment,
+        "order": order,
+        "order_detail": order_detail
+    }
