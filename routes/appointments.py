@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Appointment, Orders, OrdersDetail
+from models import Appointment, Orders, OrdersDetail, RegisterCar
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -78,7 +78,59 @@ async def get_all_appointments(db: db_dependency):
 
 
 class AppointmentRequest(BaseModel):
+    appointment_id: str
     appointment_date: date
     appointment_time: time
-    service_id: str
-    car_id: str
+    car_id: int
+
+
+@router.put('/update_appointment', tags=["Appointments"])
+async def update_appointment(appointment_request: AppointmentRequest, user: user_dependency, db: db_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_car_exists = db.query(RegisterCar).filter(
+        RegisterCar.carid == appointment_request.car_id,
+        RegisterCar.accountid == user['accountid']).first()
+
+    if not check_car_exists:
+        raise HTTPException(status_code=404, detail="Car not found")
+
+    appointment = db.query(Appointment).filter(
+        Appointment.appointmentid == appointment_request.appointment_id,
+        Appointment.accountid == user['accountid']).first()
+
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    appointment.appointmentdate = datetime.combine(
+        appointment_request.appointment_date, appointment_request.appointment_time)
+    appointment.carid = appointment_request.car_id
+
+    db.add(appointment)
+    db.commit()
+
+    return {
+        "message": "Appointment successfully updated",
+        "appointment": appointment
+    }
+
+
+@router.put('/cancel_appointment', tags=["Appointments"])
+async def cancel_appointment(appointment_id: str, user: user_dependency, db: db_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    appointment = db.query(Appointment).filter(
+        Appointment.appointmentid == appointment_id,
+        Appointment.accountid == user['accountid']).first()
+
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    appointment.status = "Cancelled"
+    db.commit()
+
+    return {
+        "message": "Appointment successfully cancelled"
+    }

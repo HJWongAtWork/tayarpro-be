@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Cart, Tyre, Service, Orders, OrdersDetail, Appointment, Invoice
+from models import Cart, Tyre, Service, Orders, OrdersDetail, Appointment, Invoice, RegisterCar
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -179,14 +179,16 @@ class CheckoutCarts(BaseModel):
     Appointment Date: YYYY-MM-DD
     Appointment Time:   HH:MM
     Appointment Bay:   1, 2, 3, 4, 5
-    Car ID: 
+    Car ID:
     """
-    car_id: str = Field(..., description="Car ID")
+    car_id: int = Field(..., description="Car ID")
     appointment_date: date = Field(default=date(
         2023, 1, 24), description="Appointment Date")
     appointment_time: time = Field(default=time(
         14, 30), description="Appointment Time")
     appointment_bay: int = Field(..., description="Appointment Bay")
+    payment_method: str = Field(
+        default="Cash", description="Payment Method(Cash, Card, E-Wallet)")
 
 
 @router.post('/checkout', tags=['Checkout'], summary="Checkout the cart")
@@ -215,53 +217,67 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     order_id = str(uuid.uuid4())
     total_price = 0
 
-    for cart in all_carts:
-        total_price = total_price + (cart.unitprice * cart.quantity)
+    check_car_exists = db.query(RegisterCar).filter(
+        RegisterCar.carid == checkout.car_id, RegisterCar.accountid == user['accountid']).first()
 
-    new_order = Orders(
-        orderid=order_id,
-        accountid=user['accountid'],
-        totalprice=total_price,
-        createdat=datetime.now(),
-    )
+    if not check_car_exists:
+        raise HTTPException(status_code=404, detail="Car not found")
 
-    db.add(new_order)
-    db.commit()
+    try:
 
-    for cart in all_carts:
-        new_order_detail = OrdersDetail(
+        for cart in all_carts:
+            total_price = total_price + (cart.unitprice * cart.quantity)
+
+        new_order = Orders(
             orderid=order_id,
-            productid=cart.productid,
-            quantity=cart.quantity,
-            unitprice=cart.unitprice,
-            carid=checkout.car_id,
-            totalprice=(cart.unitprice * cart.quantity)
+            accountid=user['accountid'],
+            totalprice=total_price,
+            createdat=datetime.now(),
+            paymentmethod=checkout.payment_method
         )
 
-        db.add(new_order_detail)
+        db.add(new_order)
         db.commit()
 
-    # Empty the cart
-    db.query(Cart).filter(Cart.accountid == user['accountid']).delete()
-    db.commit()
+        for cart in all_carts:
+            new_order_detail = OrdersDetail(
+                orderid=order_id,
+                productid=cart.productid,
+                quantity=cart.quantity,
+                unitprice=cart.unitprice,
+                carid=checkout.car_id,
+                totalprice=(cart.unitprice * cart.quantity)
+            )
 
-    new_appointment = Appointment(
-        appointmentid=str(uuid.uuid4()),
-        accountid=user['accountid'],
-        appointmentdate=datetime.combine(
-            checkout.appointment_date, checkout.appointment_time),
-        createdat=datetime.now(),
-        status="Pending",
-        appointment_bay=checkout.appointment_bay
-    )
+            db.add(new_order_detail)
+            db.commit()
 
-    db.add(new_appointment)
-    db.commit()
+        # Empty the cart
+        db.query(Cart).filter(Cart.accountid == user['accountid']).delete()
+        db.commit()
 
-    # Update the order with the appointment ID
-    db.query(Orders).filter(Orders.orderid == order_id).update(
-        {"appointmentid": new_appointment.appointmentid})
-    db.commit()
+        new_appointment = Appointment(
+            appointmentid=str(uuid.uuid4()),
+            accountid=user['accountid'],
+            appointmentdate=datetime.combine(
+                checkout.appointment_date, checkout.appointment_time),
+            createdat=datetime.now(),
+            status="Future",
+            appointment_bay=checkout.appointment_bay,
+            carid=checkout.car_id
+        )
+
+        db.add(new_appointment)
+        db.commit()
+
+        # Update the order with the appointment ID
+        db.query(Orders).filter(Orders.orderid == order_id).update(
+            {"appointmentid": new_appointment.appointmentid})
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
     return {
         "message": "Checkout successful",
@@ -270,7 +286,7 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
     }
 
 
-@router.post('/get_all_orders', tags=['Orders'])
+@ router.post('/get_all_orders', tags=['Orders'])
 async def get_all_orders(db: db_dependency, user: user_dependency):
     """
     Get all orders
@@ -284,7 +300,7 @@ async def get_all_orders(db: db_dependency, user: user_dependency):
     return all_orders
 
 
-@router.post('/get_order_detail', tags=['Orders'])
+@ router.post('/get_order_detail', tags=['Orders'])
 async def get_order_detail(db: db_dependency, user: user_dependency, order_id: str):
     """
     Get order detail by order_id
@@ -306,7 +322,7 @@ async def get_order_detail(db: db_dependency, user: user_dependency, order_id: s
     }
 
 
-@router.post('/update_cart_quantity/{product_id}/{new_quantity}', tags=['Cart'])
+@ router.post('/update_cart_quantity/{product_id}/{new_quantity}', tags=['Cart'])
 async def update_cart_quantity(
         product_id: str,
         new_quantity: int,
@@ -350,7 +366,7 @@ async def update_cart_quantity(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete('/delete_cart_item/{product_id}', tags=['Cart'])
+@ router.delete('/delete_cart_item/{product_id}', tags=['Cart'])
 async def delete_cart_item(
         product_id: str,
         db: db_dependency,
@@ -384,7 +400,7 @@ async def delete_cart_item(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post('/get_carts_by_details', tags=['Cart'])
+@ router.post('/get_carts_by_details', tags=['Cart'])
 async def get_carts_by_details(db: db_dependency, user: user_dependency, accountid: str, productid: str):
     """
     Get all carts by details

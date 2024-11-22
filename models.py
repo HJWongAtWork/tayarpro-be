@@ -170,7 +170,7 @@ class Orders (Base):
         "appointment.appointmentid"), nullable=True)
     # Pending, Completed, Cancelled
     status = Column(String(255), nullable=False, default="Pending")
-    paymentmethod = Column(String(255), nullable=False)
+    paymentmethod = Column(String(255), nullable=False, default="Cash") #Cash, Card, E-Wallet
 
 
 class OrdersDetail(Base):
@@ -195,6 +195,7 @@ class Appointment(Base):
     # Completed, Cancelled, Future
     status = Column(String(255), nullable=False)
     appointment_bay = Column(String(255), nullable=True)
+    carid = Column(Integer, ForeignKey("registercar.carid"), nullable=False)
 
 
 class Invoice(Base):

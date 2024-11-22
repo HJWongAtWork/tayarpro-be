@@ -73,7 +73,8 @@ async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
             carbrand=car.car_brand.lower(),
             carmodel=car.car_model.lower(),
             cartype=car.car_type,
-            caryear=car.car_year)
+            caryear=car.car_year,
+            tyresize=car.tyre_size,)
 
         db.add(new_car)
         db.commit()
