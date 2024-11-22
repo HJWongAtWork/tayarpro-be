@@ -249,6 +249,7 @@ class FeedbackRequest(BaseModel):
 @router.post('/send_feedback', tags=["User Action"])
 async def send_feedback(feedback: FeedbackRequest, db: db_dependency):
     new_feedback = Feedback(
+        feedbackid=str(uuid.uuid4()),
         email=feedback.email,
         subject=feedback.subject,
         content=feedback.content,
