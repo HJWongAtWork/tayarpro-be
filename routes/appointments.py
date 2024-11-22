@@ -32,6 +32,17 @@ async def get_appointment(user: user_dependency, db: db_dependency):
 
     appointments = db.query(Appointment).filter(
         Appointment.accountid == user['accountid']).all()
+
+    for appointment in appointments:
+        order = db.query(Orders).filter(
+            Orders.appointmentid == appointment.appointmentid).first()
+
+        order_detail = db.query(OrdersDetail).filter(
+            OrdersDetail.orderid == order.orderid).all()
+
+        appointment.order = order
+        appointment.order_detail = order_detail
+
     return appointments
 
 
@@ -58,3 +69,10 @@ async def get_appointment_by_id(appointment_id: str, user: user_dependency, db: 
         "order": order,
         "order_detail": order_detail
     }
+
+
+class AppointmentRequest(BaseModel):
+    appointment_date: date
+    appointment_time: time
+    service_id: str
+    car_id: str
