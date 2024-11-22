@@ -209,6 +209,10 @@ async def get_car_years(db: db_dependency):
         "car_years": [year[0] for year in car_years]
     }
 
+
+
+
+
     # # Helper function to retrieve a car or raise 404
     # def get_car_or_404(db: Session, car_id: int):
     #     car = db.query(Car).filter(Car.carspecID == car_id).first()

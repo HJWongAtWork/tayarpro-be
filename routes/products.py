@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Products, Tyre, Brands, Products
+from fastapi import APIRouter, Depends, Path, HTTPException, Query
+from models import Products, Tyre, Brands, Products, Car, RegisterCar
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -74,3 +74,20 @@ async def get_brands(db: Session = Depends(get_db)):
 def get_products(db: Session = Depends(get_db)):
     products = db.query(Products).all()
     return products
+
+
+@router.get('/filter_tyre_by_size', summary="Get Tyre based on Tyre Size", tags=["Tyre"])
+async def filter_tyre_by_size(db: Session = Depends(get_db), tyre_size: str = Query(...)):
+    tyres = db.query(Tyre).filter(Tyre.tyresize == tyre_size).all()
+    return tyres
+
+
+@router.get('/filter_tyre_by_car_id', summary="Get Tyre based on Tyre ID", tags=["Tyre"])
+async def filter_tyre_by_id(db: db_dependency, car_id: str = Query(...)):
+    get_car = db.query(RegisterCar).filter(RegisterCar.carid == car_id).first()
+    if not get_car:
+        raise HTTPException(status_code=404, detail="Car not found")
+
+    tyres = db.query(Tyre).filter(Tyre.tyresize == get_car.tyresize).all()
+
+    return tyres
