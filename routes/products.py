@@ -82,7 +82,7 @@ async def filter_tyre_by_size(db: Session = Depends(get_db), tyre_size: str = Qu
     return tyres
 
 
-@router.get('/filter_tyre_by_car_id', summary="Get Tyre based on Tyre ID", tags=["Tyre"])
+@router.get('/filter_tyre_by_car_id', summary="Get Tyre based on User Registered Car's ID", tags=["Tyre"])
 async def filter_tyre_by_id(db: db_dependency, car_id: str = Query(...)):
     get_car = db.query(RegisterCar).filter(RegisterCar.carid == car_id).first()
     if not get_car:
