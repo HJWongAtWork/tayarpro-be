@@ -167,17 +167,6 @@ async def cart_using_post(db: db_dependency, user: user_dependency):
     return cart
 
 
-# @router.get('/get_cart', tags=['Cart'])
-# async def cart_using_post(db: db_dependency, user: user_dependency):
-#     """
-#     Cart data using post method
-#     """
-#     if not user:
-#         raise HTTPException(status_code=401, detail="Unauthorized")
-#     cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
-
-#     return cart
-
 """
 =======================
 Checkout, Invoicing and Appointments

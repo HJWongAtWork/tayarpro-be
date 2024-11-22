@@ -39,7 +39,9 @@ class Token(BaseModel):
 
 
 def authenticate_user(username: str, password: str, db):
-    user = db.query(User).filter(User.username == username).first()
+
+    user = db.query(User).filter(User.username ==
+                                 username, User.isActive == 'Y').first()
     if not user:
         return False
     if not bcrypt_context.verify(password, user.password):
@@ -124,49 +126,6 @@ async def register_user_v2(user: UserRegisterRequestV2, db: db_dependency):
         "message": "User successfully registered",
         "user_info": new_user.to_dict()  # Use the to_dict method
     }
-
-
-# @router.post("/register", tags=["Authentication"])
-# async def register_user(user: UserRegisterRequest, db: db_dependency):
-#     """
-#     Important Point:
-
-#     Date is in ISO 8601 Format (Recommended): 1990-12-31 (Year-Month-Day)
-#     """
-#     if db.query(User).filter(User.email == user.email).first():
-#         raise HTTPException(status_code=400, detail="Email already registered")
-
-#     if db.query(User).filter(User.username == user.username).first():
-#         raise HTTPException(
-#             status_code=400, detail="Username already registered")
-
-#     accountid = str(uuid.uuid4())
-
-#     new_user = User(
-#         accountid=accountid,
-#         username=user.username,
-#         firstname=user.firstname,
-#         lastname=user.lastname,
-#         phonenumber=user.phonenumber,
-#         email=user.email,
-#         address=user.address,
-#         state=user.state,
-#         city=user.city,
-#         zipcode=user.zipcode,
-#         password=bcrypt_context.hash(user.password),
-#         createdat=datetime.now(),
-#         dob=user.dob,
-#         gender=user.gender,
-#         fullname=f"{user.firstname} {user.lastname}"
-#     )
-
-#     db.add(new_user)
-#     db.commit()
-
-#     return {
-#         "message": "User successfully registered",
-#         "user_info": new_user
-#     }
 
 
 class Token(BaseModel):
@@ -260,3 +219,22 @@ async def get_password_by_username(request: UsernameRequest, db: db_dependency):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return {"username": user.username, "password": user.password}
+
+
+@router.post('/delete_account', tags=["User Action"])
+async def delete_account(db: db_dependency, user: Annotated[dict, Depends(get_current_user)]):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_user = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+
+    if not check_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    check_user.isActive = "N"
+    db.commit()
+
+    return {
+        "message": "Account successfully deleted"
+    }
