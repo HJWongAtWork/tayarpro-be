@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import User
+from models import User, Feedback
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -237,4 +237,25 @@ async def delete_account(db: db_dependency, user: Annotated[dict, Depends(get_cu
 
     return {
         "message": "Account successfully deleted"
+    }
+
+
+class FeedbackRequest(BaseModel):
+    email: EmailStr = Field(..., example="rahmanrom@gmail.com")
+    subject: str = Field(..., example="Feedback")
+    content: str = Field(..., example="This is a feedback message")
+
+
+@router.post('/send_feedback', tags=["User Action"])
+async def send_feedback(feedback: FeedbackRequest, db: db_dependency):
+    new_feedback = Feedback(
+        email=feedback.email,
+        subject=feedback.subject,
+        content=feedback.content,
+        createdat=datetime.now()
+    )
+    db.add(new_feedback)
+    db.commit()
+    return {
+        "message": "Feedback successfully sent"
     }
