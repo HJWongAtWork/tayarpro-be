@@ -170,6 +170,7 @@ class Orders (Base):
         "appointment.appointmentid"), nullable=True)
     # Pending, Completed, Cancelled
     status = Column(String(255), nullable=False, default="Pending")
+    paymentmethod = Column(String(255), nullable=False)
 
 
 class OrdersDetail(Base):

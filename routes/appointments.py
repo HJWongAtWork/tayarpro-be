@@ -71,6 +71,12 @@ async def get_appointment_by_id(appointment_id: str, user: user_dependency, db: 
     }
 
 
+@router.post('/all_appointments', tags=["Appointments"])
+async def get_all_appointments(db: db_dependency):
+    appointments = db.query(Appointment).all()
+    return appointments
+
+
 class AppointmentRequest(BaseModel):
     appointment_date: date
     appointment_time: time
