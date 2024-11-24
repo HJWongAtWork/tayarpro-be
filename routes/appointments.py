@@ -82,6 +82,7 @@ class AppointmentRequest(BaseModel):
     appointment_date: date
     appointment_time: time
     car_id: int
+    appointment_bay: int
 
 
 @router.put('/update_appointment', tags=["Appointments"])
@@ -106,6 +107,7 @@ async def update_appointment(appointment_request: AppointmentRequest, user: user
     appointment.appointmentdate = datetime.combine(
         appointment_request.appointment_date, appointment_request.appointment_time)
     appointment.carid = appointment_request.car_id
+    appointment.appointment_bay = appointment_request.appointment_bay
 
     db.add(appointment)
     db.commit()
