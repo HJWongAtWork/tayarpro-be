@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Appointment, Orders, OrdersDetail, RegisterCar
+from models import Appointment, Orders, OrdersDetail, RegisterCar, Tyre, Service
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -40,9 +40,19 @@ async def get_appointment(user: user_dependency, db: db_dependency):
         order_detail = db.query(OrdersDetail).filter(
             OrdersDetail.orderid == order.orderid).all()
 
+        for detail in order_detail:
+            if detail.productid[0] == "T":
+                detail.product = db.query(Tyre).filter(
+                    Tyre.itemid == detail.productid).first()
+            elif detail.productid[0] == "S":
+                detail.product = db.query(Service).filter(
+                    Service.serviceid == detail.productid).first()
+
         appointment.order = order
         appointment.order_detail = order_detail
 
+        appointment.car_detail = db.query(RegisterCar).filter(
+            RegisterCar.carid == appointment.carid).first()
     return appointments
 
 

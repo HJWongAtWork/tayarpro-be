@@ -157,6 +157,7 @@ class Cart(Base):
     description = Column(String(255), nullable=False)
     unitprice = Column(Numeric(8, 2), nullable=False)
     quantity = Column(Numeric(15, 0), nullable=False)
+    createdat = Column(DateTime, nullable=False)
 
 
 class Orders (Base):
@@ -170,7 +171,8 @@ class Orders (Base):
         "appointment.appointmentid"), nullable=True)
     # Pending, Completed, Cancelled
     status = Column(String(255), nullable=False, default="Pending")
-    paymentmethod = Column(String(255), nullable=False, default="Cash") #Cash, Card, E-Wallet
+    paymentmethod = Column(String(255), nullable=False,
+                           default="Cash")  # Cash, Card, E-Wallet
 
 
 class OrdersDetail(Base):

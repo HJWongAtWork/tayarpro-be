@@ -81,7 +81,8 @@ async def add_service_to_cart(db: db_dependency, user: user_dependency, service:
             productid=service.service_id,
             quantity=service.quantity,
             unitprice=check_services.price,
-            description=check_services.description
+            description=check_services.description,
+            createdat=datetime.now()
         )
 
         db.add(new_cart)
@@ -115,6 +116,9 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
     if not check_tyres:
         raise HTTPException(status_code=404, detail="Tyre not found")
 
+    if check_tyres.stockunit < tyre.quantity:
+        raise HTTPException(status_code=400, detail="Insufficient stock")
+
     check_cart = db.query(Cart).filter(
         Cart.accountid == user['accountid'], Cart.productid == tyre.tyre_id).first()
 
@@ -128,11 +132,17 @@ async def add_tyre_to_cart(db: db_dependency, user: user_dependency, tyre: addTy
             productid=tyre.tyre_id,
             quantity=tyre.quantity,
             unitprice=check_tyres.unitprice,
-            description=check_tyres.description
+            description=check_tyres.description,
+            createdat=datetime.now()
         )
 
         db.add(new_cart)
         db.commit()
+
+    if check_cart:
+        check_tyres.stockunit -= tyre.quantity
+        db.commit()
+        return {"message": "Tyre added to Cart"}
 
     all_carts = db.query(Cart).filter(
         Cart.accountid == user['accountid']).all()
@@ -150,8 +160,9 @@ async def cart_using_get(db: db_dependency, user: user_dependency):
     """
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    cart = db.query(Cart).filter(Cart.accountid == user['accountid']).all()
 
+    cart = db.query(Cart).filter(Cart.accountid ==
+                                 user['accountid']).order_by(Cart.createdat).all()
     return cart
 
 
@@ -352,6 +363,21 @@ async def update_cart_quantity(
 
         if not cart_item:
             raise HTTPException(status_code=404, detail="Cart item not found")
+
+        check_tyres = db.query(Tyre).filter(
+            Tyre.itemid == product_id).first()
+
+        if cart_item.quantity > new_quantity:
+            check_tyres.stockunit += cart_item.quantity - new_quantity
+            db.commit()
+
+        elif cart_item.quantity < new_quantity:
+            if check_tyres.stockunit < new_quantity - cart_item.quantity:
+                raise HTTPException(
+                    status_code=400, detail="Insufficient stock")
+
+            check_tyres.stockunit -= new_quantity - cart_item.quantity
+            db.commit()
 
         cart_item.quantity = new_quantity
         db.commit()
