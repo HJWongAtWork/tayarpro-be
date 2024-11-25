@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Service, User, Tyre, Orders
+from models import Service, User, Tyre, Orders, OrdersDetail
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from routes.account import get_current_user, Token
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 from sqlalchemy import extract, func
 
@@ -223,6 +223,137 @@ async def edit_service(db: db_dependency, user: user_dependency, service_update:
     db.refresh(service)
 
 
+@router.post('/brand_distributions', tags=["Admin Action"])
+async def brand_distributions(db: db_dependency, user: user_dependency):
+    order_items = db.query(OrdersDetail).filter(
+        OrdersDetail.productid.like('T%')).all()
+    for order in order_items:
+        order.brandid = db.query(Tyre).filter(
+            Tyre.itemid == order.productid).first().brandid
+    print(order_items)
+
+    return {
+        "message": "Success"
+    }
+
+
+@router.post('/get_sales_and_orders_data', tags=["Admin Action"])
+async def get_sales_and_orders_data(db: db_dependency, user: user_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    month_now = datetime.now().month
+    year_now = datetime.now().year
+
+    months = []
+    sales = []
+    orders = []
+
+    # Get sales for the past six months
+    sales_data = {}
+    for i in range(7):
+        month = (month_now - i) % 12 or 12
+        year = year_now if month_now - i > 0 else year_now - 1
+        month_name = datetime(year, month, 1).strftime('%B')
+        monthly_sales = db.query(func.sum(Orders.totalprice)).filter(
+            extract('month', Orders.createdat) == month,
+            extract('year', Orders.createdat) == year
+        ).scalar()
+        sales_data[month_name] = monthly_sales or 0
+        sales.append(monthly_sales or 0)
+        months.append(month_name)
+
+    num_orders_data = {}
+
+    for i in range(7):
+        month = (month_now - i) % 12 or 12
+        year = year_now if month_now - i > 0 else year_now - 1
+        month_name = datetime(year, month, 1).strftime('%B')
+        monthly_orders = db.query(func.count(Orders.orderid)).filter(
+            extract('month', Orders.createdat) == month,
+            extract('year', Orders.createdat) == year
+        ).scalar()
+        num_orders_data[month_name] = monthly_orders or 0
+        orders.append(monthly_orders or 0)
+
+    sales.reverse()
+    orders.reverse()
+    months.reverse()
+
+    return {
+        "six_months_sales": sales_data,
+        "six_months_orders": num_orders_data,
+        "sales": sales,
+        "orders": orders,
+        "months": months
+    }
+
+
+@router.post('/get_registered_users', tags=["Admin Action"])
+async def get_registered_users(db: db_dependency, user: user_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    month_now = datetime.now().month
+    year_now = datetime.now().year
+
+    user_data = {}
+    months = []
+    registred_users = []
+
+    for i in range(7):
+        month = (month_now - i) % 12 or 12
+        year = year_now if month_now - i > 0 else year_now - 1
+        month_name = datetime(year, month, 1).strftime('%B')
+        monthly_users = db.query(func.count(User.accountid)).filter(
+            extract('month', User.createdat) == month,
+            extract('year', User.createdat) == year
+        ).scalar()
+        user_data[month_name] = monthly_users or 0
+        registred_users.append(monthly_users or 0)
+        months.append(month_name)
+
+    registred_users.reverse()
+    months.reverse()
+
+    return {
+        "six_months_users": user_data,
+        "months": months,
+        "registered_users": registred_users
+    }
+
+
+@router.post('/get_order_statistics', tags=["Admin Action"])
+async def get_orders_by_month(db: db_dependency, user: user_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    month_now = datetime.now().month
+    year_now = datetime.now().year
+
+    months = []
+    orders = []
+
+    for i in range(7):
+        month = (month_now - i) % 12 or 12
+        year = year_now if month_now - i > 0 else year_now - 1
+        month_name = datetime(year, month, 1).strftime('%B')
+        monthly_orders = db.query(func.count(Orders.orderid)).filter(
+            extract('month', Orders.createdat) == month,
+            extract('year', Orders.createdat) == year
+        ).scalar()
+        orders.append(monthly_orders or 0)
+        months.append(month_name)
+
+    orders.reverse()
+    months.reverse()
+
+    return {
+        "months": months,
+        "orders": orders
+    }
+
+
 @router.post('/data_dashboard', tags=["Admin Action"])
 async def data_dashboard(db: db_dependency, user: user_dependency):
 
@@ -278,7 +409,6 @@ async def data_dashboard(db: db_dependency, user: user_dependency):
         "this_month_user": this_month_user,
         "previous_month_users": previous_month_users
     }
-
 
 
 """

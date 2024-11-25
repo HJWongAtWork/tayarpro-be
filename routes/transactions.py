@@ -178,6 +178,20 @@ async def cart_using_post(db: db_dependency, user: user_dependency):
     return cart
 
 
+@router.post('/empty_cart', tags=['Cart'])
+async def empty_cart(db: db_dependency, user: user_dependency):
+    """
+    Empty the cart
+    """
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    db.query(Cart).filter(Cart.accountid == user['accountid']).delete()
+    db.commit()
+
+    return {"message": "Cart emptied"}
+
+
 """
 =======================
 Checkout, Invoicing and Appointments
