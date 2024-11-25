@@ -146,3 +146,98 @@ async def cancel_appointment(appointment_id: str, user: user_dependency, db: db_
     return {
         "message": "Appointment successfully cancelled"
     }
+
+@router.post('/get_appointment_details', tags=["Appointments"])
+async def get_appointment_details(user: user_dependency, db: db_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Query for all appointments for the user
+    appointments = db.query(Appointment).filter(
+        Appointment.accountid == user['accountid']
+    ).all()
+
+    if not appointments:
+        return {"message": "No appointments found for this user"}
+
+    result = []
+
+    for appointment in appointments:
+        # Query for the order associated with each appointment
+        order = db.query(Orders).filter(
+            Orders.appointmentid == appointment.appointmentid
+        ).first()
+
+        if not order:
+            result.append({
+                "appointment": appointment,
+                "order_details": []
+            })
+            continue
+
+        # Query for the order details, including tyre and service information
+        order_details = db.query(
+            OrdersDetail,
+            RegisterCar,
+            Tyre,
+            Service
+        ).outerjoin(
+            RegisterCar, OrdersDetail.carid == RegisterCar.carid
+        ).outerjoin(
+            Tyre, OrdersDetail.productid == Tyre.itemid
+        ).outerjoin(
+            Service, OrdersDetail.productid == Service.serviceid
+        ).filter(
+            OrdersDetail.orderid == order.orderid
+        ).all()
+
+        # Process the results
+        processed_details = []
+        for detail, car, tyre, service in order_details:
+            processed_detail = {
+                "orderid": detail.orderid,
+                "productid": detail.productid,
+                "carid": detail.carid,
+                "unitprice": float(detail.unitprice),
+                "quantity": float(detail.quantity),
+                "totalprice": float(detail.totalprice),
+                "car": {
+                    "carid": car.carid if car else None,
+                    "carbrand": car.carbrand if car else None,
+                    "carmodel": car.carmodel if car else None,
+                    "platenumber": car.platenumber if car else None
+                },
+                "tyre": {
+                    "itemid": tyre.itemid if tyre else None,
+                    "description": tyre.description if tyre else None
+                },
+                "service": {
+                    "serviceid": service.serviceid if service else None,
+                    "description": service.description if service else None
+                }
+            }
+            processed_details.append(processed_detail)
+
+        result.append({
+            "appointment": {
+                "appointmentid": appointment.appointmentid,
+                "accountid": appointment.accountid,
+                "appointmentdate": appointment.appointmentdate,
+                "createdat": appointment.createdat,
+                "status": appointment.status,
+                "appointment_bay": appointment.appointment_bay,
+                "carid": appointment.carid
+            },
+            "order": {
+                "orderid": order.orderid,
+                "accountid": order.accountid,
+                "createdat": order.createdat,
+                "totalprice": float(order.totalprice) if order.totalprice else None,
+                "appointmentid": order.appointmentid,
+                "status": order.status,
+                "paymentmethod": order.paymentmethod
+            },
+            "order_details": processed_details
+        })
+
+    return result
