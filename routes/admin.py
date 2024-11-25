@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Service, User, Tyre, Orders, OrdersDetail
+from models import Service, User, Tyre, Orders, OrdersDetail, Notification
 from database import SessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -75,13 +75,13 @@ class NewTyreRequests(BaseModel):
     brandid:  str = Field(min_length=3, max_length=50)
     description: str = Field(min_length=3, max_length=50)
     cartype: str = Field(min_length=3, max_length=50)
-    image_link: str = Field(min_length=3, max_length=50)
+    image_link: str = Field(min_length=3, max_length=200)
     price: float = Field(gt=0)
     details1: str = Field(min_length=3, max_length=50)
     details2: str = Field(min_length=3, max_length=50)
     details3: str = Field(min_length=3, max_length=50)
     tyresize: str = Field(min_length=3, max_length=50)
-    speedindex: str = Field(min_length=3, max_length=50)
+    speedindex: str = Field(min_length=1, max_length=50)
     loadindex: int = Field(gt=0)
     stockunit: int = Field(gt=0)
     status: str = Field(min_length=3, max_length=50)
@@ -105,12 +105,12 @@ async def admin_add_products(db: db_dependency, user: user_dependency, tyre: New
         description=tyre.description,
         cartype=tyre.cartype,
         image_link=tyre.image_link,
-        unitprice=tyre.price,
+        unitprice=float(tyre.price),
         details=[tyre.details1, tyre.details2, tyre.details3],
         tyresize=tyre.tyresize,
         speedindex=tyre.speedindex,
-        loadindex=tyre.loadindex,
-        stockunit=tyre.stockunit,
+        loadindex=int(tyre.loadindex),
+        stockunit=int(tyre.stockunit),
         status=tyre.status,
         createdat=datetime.now(),
         createdby=user['accountid']
@@ -167,7 +167,8 @@ async def all_users(db: db_dependency, user: user_dependency):
     if not check_admin:
         raise HTTPException(status_code=401, detail="You are not admin")
 
-    all_users = db.query(User).all()
+    all_users = db.query(User).order_by(User.isAdmin.desc()).all()
+
     return all_users
 
 
@@ -409,6 +410,17 @@ async def data_dashboard(db: db_dependency, user: user_dependency):
         "this_month_user": this_month_user,
         "previous_month_users": previous_month_users
     }
+
+
+@router.post('/get_notifications', tags=["Admin Action"])
+async def get_notifications(db: db_dependency, user: user_dependency):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    notifications = db.query(Notification).order_by(
+        Notification.createdat.desc()).limit(5).all()
+
+    return notifications
 
 
 """

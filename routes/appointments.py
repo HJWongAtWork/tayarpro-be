@@ -91,7 +91,6 @@ class AppointmentRequest(BaseModel):
     appointment_id: str
     appointment_date: date
     appointment_time: time
-    car_id: int
     appointment_bay: int
 
 
@@ -101,7 +100,6 @@ async def update_appointment(appointment_request: AppointmentRequest, user: user
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     check_car_exists = db.query(RegisterCar).filter(
-        RegisterCar.carid == appointment_request.car_id,
         RegisterCar.accountid == user['accountid']).first()
 
     if not check_car_exists:
@@ -116,7 +114,6 @@ async def update_appointment(appointment_request: AppointmentRequest, user: user
 
     appointment.appointmentdate = datetime.combine(
         appointment_request.appointment_date, appointment_request.appointment_time)
-    appointment.carid = appointment_request.car_id
     appointment.appointment_bay = appointment_request.appointment_bay
 
     db.add(appointment)
@@ -146,6 +143,7 @@ async def cancel_appointment(appointment_id: str, user: user_dependency, db: db_
     return {
         "message": "Appointment successfully cancelled"
     }
+
 
 @router.post('/get_appointment_details', tags=["Appointments"])
 async def get_appointment_details(user: user_dependency, db: db_dependency):
