@@ -1,0 +1,17 @@
+# passlib
+bcrypt==4.0.1
+python-jose[cryptography]
+python-multipart
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+faker
+pydantic==2.9.2    # Pydantic for data validation and parsing
+passlib[bcrypt]==1.7.4  # Passlib for password hashing (bcrypt is the most secure)
+python-jose==3.3.0  # Jose for handling JWT tokens
+typing-extensions  # For Annotated and other typing extensions (needed for Python 3.7 and below)
+google
+cloud-sql-python-connector
+pg8000
+pydantic[email]
