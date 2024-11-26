@@ -8,6 +8,8 @@ from routes.account import get_current_user, Token
 from datetime import datetime, timedelta
 from typing import Optional
 from sqlalchemy import extract, func
+import time
+import uuid
 
 
 def get_db():
@@ -442,3 +444,87 @@ TODO:
 6. Dashboard Data
 7. View All Transactions
 """
+
+
+@router.get('/hit_notifications', tags=["Admin Action"])
+async def hit_notifications(db: db_dependency):
+
+    notifications = [
+        {
+            "message": "Received new order from lol@gmail.com!",
+            "status": "active",
+            "category": "Order",
+            "icon": "fa fa-shopping-cart",
+        },
+        {
+            "message": "Uh oh! Tyre T002 stock is running low!",
+            "status": "active",
+            "category": "Stock",
+            "icon": "fa fa-exclamation-triangle",
+        },
+        {
+            "message": "aniq@gmail.com has just registered!",
+            "status": "active",
+            "category": "User",
+            "icon": "fa fa-user-plus",
+        },
+        {
+            "message": "New order placed by vincent.23@example.com!",
+            "status": "active",
+            "category": "Order",
+            "icon": "fa fa-shopping-cart",
+        },
+        {
+            "message": "Stock for Tyre T008 is below threshold!",
+            "status": "active",
+            "category": "Stock",
+            "icon": "fa fa-exclamation-triangle",
+        },
+        {
+            "message": "vincent.1@example.com has just registered!",
+            "status": "active",
+            "category": "User",
+            "icon": "fa fa-user-plus",
+        },
+        {
+            "message": "Received new order from 33@example.org!",
+            "status": "active",
+            "category": "Order",
+            "icon": "fa fa-shopping-cart",
+        },
+        {
+            "message": "Stock for Tyre T008 is running low!",
+            "status": "active",
+            "category": "Stock",
+            "icon": "fa fa-exclamation-triangle",
+        },
+        {
+            "message": "christopher3220@example.org has just registered!",
+            "status": "active",
+            "category": "User",
+            "icon": "fa fa-user-plus",
+        },
+        {
+            "message": "New order placed by aniqfaidi@example.com!",
+            "status": "active",
+            "category": "Order",
+            "icon": "fa fa-shopping-cart",
+        }
+    ]
+
+    for notification in notifications:
+        new_notification = Notification(
+            notificationid=str(uuid.uuid4()),
+            message=notification["message"],
+            status=notification["status"],
+            category=notification["category"],
+            icon=notification["icon"],
+            createdat=datetime.now()
+        )
+        db.add(new_notification)
+        db.commit()
+        time.sleep(1)
+
+    notifications = db.query(Notification).all()
+
+    return notifications

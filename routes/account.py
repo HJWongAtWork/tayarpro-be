@@ -144,7 +144,7 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                             detail="Could not validate user.")
     else:
         token = create_access_token(
-            user.username, user.accountid, timedelta(minutes=60))
+            user.username, user.accountid, timedelta(minutes=120))
 
     return {"access_token": token, "token_type": "bearer", "user_info": user.to_dict()}
 
@@ -260,3 +260,4 @@ async def send_feedback(feedback: FeedbackRequest, db: db_dependency):
     return {
         "message": "Feedback successfully sent"
     }
+
