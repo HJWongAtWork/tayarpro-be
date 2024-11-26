@@ -54,22 +54,6 @@ CREATE TABLE public.brands (
 ALTER TABLE public.brands OWNER TO postgres;
 
 --
--- Name: car_specifications; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.car_specifications (
-    car_id integer NOT NULL,
-    car_brand character varying(255) NOT NULL,
-    car_model character varying(255) NOT NULL,
-    car_year integer NOT NULL,
-    tyre_size character varying(255) NOT NULL,
-    car_type character varying(255) NOT NULL
-);
-
-
-ALTER TABLE public.car_specifications OWNER TO postgres;
-
---
 -- Name: car_specifications_car_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -83,13 +67,6 @@ CREATE SEQUENCE public.car_specifications_car_id_seq
 
 
 ALTER SEQUENCE public.car_specifications_car_id_seq OWNER TO postgres;
-
---
--- Name: car_specifications_car_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.car_specifications_car_id_seq OWNED BY public.car_specifications.car_id;
-
 
 --
 -- Name: cart; Type: TABLE; Schema: public; Owner: postgres
@@ -343,13 +320,6 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO postgres;
-
---
--- Name: car_specifications car_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.car_specifications ALTER COLUMN car_id SET DEFAULT nextval('public.car_specifications_car_id_seq'::regclass);
-
 
 --
 -- Name: registercar carid; Type: DEFAULT; Schema: public; Owner: postgres
@@ -3218,112 +3188,6 @@ MICH	TYRE	Michelin	Active	2024-11-26 21:18:29.12401	\N
 CONT	TYRE	Continental	Active	2024-11-26 21:18:29.134981	\N
 BRID	TYRE	Bridgestone	Active	2024-11-26 21:18:29.138893	\N
 GODY	TYRE	Goodyear	Active	2024-11-26 21:18:29.143513	\N
-\.
-
-
---
--- Data for Name: car_specifications; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.car_specifications (car_id, car_brand, car_model, car_year, tyre_size, car_type) FROM stdin;
-1	proton	x70	2022	225/60R18	SUV
-2	proton	exora	2021	205/60R16	Passenger
-3	proton	iriz	2020	175/65R15	Passenger
-4	proton	perdana	2019	215/55R17	Passenger
-5	proton	suprima s	2018	205/55R16	Passenger
-6	proton	preve	2017	215/50R17	Passenger
-7	proton	x50	2022	215/60R17	SUV
-8	proton	satria neo	2016	195/50R15	Passenger
-9	proton	gen-2	2010	195/55R15	Passenger
-10	proton	wira	2009	175/70R13	Passenger
-11	proton	waja	2008	195/60R15	Passenger
-12	proton	savvy	2005	175/60R14	Passenger
-13	proton	inspira	2013	215/50R17	Passenger
-14	proton	arena	2006	185/70R13	Passenger
-15	proton	iswara	2007	175/70R13	Passenger
-16	proton	putra	2001	195/55R15	Passenger
-17	proton	juara	2004	185/60R14	Passenger
-18	proton	tiara	2003	165/65R13	Passenger
-19	perodua	myvi	2021	175/65R14	Passenger
-20	perodua	axia	2020	175/65R14	Passenger
-21	perodua	alza	2022	185/55R15	Passenger
-22	perodua	bezza	2021	175/65R14	Passenger
-23	perodua	aruz	2021	215/60R17	SUV
-24	perodua	kancil	2009	145/70R12	Passenger
-25	perodua	kelisa	2007	165/55R13	Passenger
-26	perodua	kenari	2006	165/55R14	Passenger
-27	perodua	viva	2015	155/65R13	Passenger
-28	perodua	rusa	2003	195/70R14	Passenger
-29	perodua	nautica	2009	215/65R16	SUV
-30	toyota	vios	2021	185/60R15	Passenger
-31	toyota	corolla altis	2022	205/55R16	Passenger
-32	toyota	hilux	2022	265/65R17	SUV
-33	toyota	camry	2021	215/55R17	Passenger
-34	toyota	fortuner	2021	265/60R18	SUV
-35	toyota	yaris	2020	185/60R15	Passenger
-36	toyota	avanza	2020	185/65R15	Passenger
-37	toyota	land cruiser	2021	285/60R18	SUV
-38	toyota	alphard	2022	235/50R18	Passenger
-39	toyota	rav4	2021	235/55R19	SUV
-40	toyota	harrier	2021	235/55R18	SUV
-41	toyota	prius	2020	195/65R15	Passenger
-42	toyota	rush	2020	215/65R16	SUV
-43	toyota	vellfire	2021	235/50R18	Passenger
-44	toyota	innova	2020	205/65R16	Passenger
-45	honda	city	2020	185/55R16	Passenger
-46	honda	civic	2021	215/50R17	Passenger
-47	honda	cr-v	2022	235/60R18	SUV
-48	honda	hr-v	2022	225/50R18	SUV
-49	honda	accord	2021	235/45R18	Passenger
-50	honda	jazz	2020	175/65R15	Passenger
-51	honda	br-v	2021	215/60R16	SUV
-52	honda	odyssey	2021	235/60R17	Passenger
-53	honda	pilot	2020	245/50R20	SUV
-54	honda	passport	2021	245/60R18	SUV
-55	bmw	3 series	2021	225/50R17	Passenger
-56	bmw	5 series	2022	245/45R18	Passenger
-57	bmw	x5	2022	275/40R20	SUV
-58	bmw	x3	2021	245/50R19	SUV
-59	bmw	x7	2022	285/45R21	SUV
-60	bmw	7 series	2021	245/50R18	Passenger
-61	bmw	x1	2020	225/50R18	SUV
-62	bmw	4 series	2021	225/45R18	Passenger
-63	bmw	6 series	2020	245/45R18	Passenger
-64	bmw	z4	2021	225/45R17	Passenger
-65	kia	picanto	2020	175/65R14	Passenger
-66	kia	rio	2021	185/65R15	Passenger
-67	kia	seltos	2022	215/55R17	SUV
-68	kia	sorento	2022	235/65R18	SUV
-69	kia	sportage	2022	225/55R18	SUV
-70	kia	optima	2020	215/55R17	Passenger
-71	kia	carnival	2021	235/60R18	Passenger
-72	kia	stinger	2022	225/40R19	Passenger
-73	hyundai	i10	2021	165/65R14	Passenger
-74	hyundai	elantra	2021	205/55R16	Passenger
-75	hyundai	tucson	2022	225/55R18	SUV
-76	hyundai	santa fe	2022	235/60R18	SUV
-77	hyundai	sonata	2021	215/55R17	Passenger
-78	hyundai	palisade	2022	245/50R20	SUV
-79	hyundai	kona	2021	215/55R17	SUV
-80	hyundai	venue	2022	205/60R16	SUV
-81	hyundai	ioniq	2021	205/55R16	Passenger
-82	hyundai	nexo	2022	225/55R19	SUV
-83	mercedes	a-class	2021	205/55R17	Passenger
-84	mercedes	c-class	2022	225/50R17	Passenger
-85	mercedes	e-class	2022	245/45R18	Passenger
-86	mercedes	s-class	2021	255/45R19	Passenger
-87	mercedes	gla	2022	215/55R18	SUV
-88	mercedes	glb	2021	235/55R18	SUV
-89	mercedes	glc	2022	235/55R19	SUV
-90	mercedes	gle	2022	275/50R20	SUV
-91	mercedes	gls	2021	275/50R20	SUV
-92	mercedes	eqc	2022	235/55R19	SUV
-93	mercedes	cla	2021	225/45R18	Passenger
-94	mercedes	amg gt	2021	265/35R19	Passenger
-95	mercedes	g-class	2021	275/55R19	SUV
-96	mercedes	maybach s-class	2022	255/45R20	Passenger
-97	mercedes	sprinter	2022	235/65R16	Passenger
-98	mercedes	v-class	2021	225/60R16	Passenger
 \.
 
 
@@ -14476,14 +14340,6 @@ ALTER TABLE ONLY public.brands
 
 
 --
--- Name: car_specifications car_specifications_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.car_specifications
-    ADD CONSTRAINT car_specifications_pkey PRIMARY KEY (car_id);
-
-
---
 -- Name: cart cart_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -14601,13 +14457,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_username_key UNIQUE (username);
-
-
---
--- Name: ix_car_specifications_car_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_car_specifications_car_id ON public.car_specifications USING btree (car_id);
 
 
 --
