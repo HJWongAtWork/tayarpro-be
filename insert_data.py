@@ -81,7 +81,8 @@ for index, row in df.iterrows():
         speedindex=row['Speed Index'],
         loadindex=row['Load Index'],
         stockunit=row['StockUnit'],
-        status="Active")
+        status="Active",
+        createdat=datetime.now())
     db.add(tyre)
     db.commit()
 
