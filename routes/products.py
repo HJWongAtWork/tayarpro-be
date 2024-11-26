@@ -32,7 +32,7 @@ For all products page in Frontend
 
 @router.get("/get_all_tyres", summary="Get all of the tyres", tags=["Products"])
 async def get_all_tyres(db: db_dependency):
-    tyres = db.query(Tyre).all()
+    tyres = db.query(Tyre).order_by(Tyre.createdat.desc()).all()
     return tyres
 
 """
