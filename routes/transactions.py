@@ -433,8 +433,7 @@ async def delete_cart_item(
         db.delete(cart_item)
         db.commit()
 
-        return {"message": "Cart item deleted",
-                "product_id": product_id}
+        return {"message": "Cart item deleted"}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
