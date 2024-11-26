@@ -40,7 +40,7 @@ class CarRequest(BaseModel):
     plate_number: str = Field(min_length=1, max_length=50)
     car_brand: str = Field(min_length=1, max_length=50)
     car_model: str = Field(min_length=1, max_length=50)
-    car_type: CarTypeEnum
+    car_type: str = Field(min_length=1, max_length=50)
     car_year: int = Field(gt=1980)
     tyre_size: Optional[str] = Field(None, min_length=3, max_length=50)
 
@@ -49,7 +49,6 @@ class CarRequest(BaseModel):
 async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
-
     """
     Add Tyre Size Optional to CarRequest
     """
@@ -66,6 +65,22 @@ async def create_car(db: db_dependency, user: user_dependency, car: CarRequest):
         raise HTTPException(status_code=400, detail="Car already registered")
 
     else:
+
+        if car.tyre_size.lower() == "unsure" or car.car_type.lower() == "unsure":
+
+            find_car = db.query(Car).filter(
+                and_(
+                    Car.car_brand == car.car_brand.lower(),
+                    Car.car_model == car.car_model.lower(),
+                )
+            ).first()
+
+            if car.tyre_size.lower() == "unsure":
+                car.tyre_size = find_car.tyre_size
+
+            if car.car_type.lower() == "unsure":
+                car.car_type = find_car.car_type
+
         new_car = RegisterCar(
             accountid=user["accountid"],
             platenumber=car.plate_number.lower().replace(" ", ""),
@@ -208,10 +223,6 @@ async def get_car_years(db: db_dependency):
     return {
         "car_years": [year[0] for year in car_years]
     }
-
-
-
-
 
     # # Helper function to retrieve a car or raise 404
     # def get_car_or_404(db: Session, car_id: int):
