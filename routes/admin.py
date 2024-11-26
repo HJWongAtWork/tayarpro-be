@@ -77,9 +77,6 @@ class NewTyreRequests(BaseModel):
     cartype: str = Field(min_length=3, max_length=50)
     image_link: str = Field(min_length=3, max_length=200)
     price: float = Field(gt=0)
-    details1: str = Field(min_length=3, max_length=50)
-    details2: str = Field(min_length=3, max_length=50)
-    details3: str = Field(min_length=3, max_length=50)
     tyresize: str = Field(min_length=3, max_length=50)
     speedindex: str = Field(min_length=1, max_length=50)
     loadindex: int = Field(gt=0)
@@ -87,7 +84,7 @@ class NewTyreRequests(BaseModel):
     status: str = Field(min_length=3, max_length=50)
 
 
-@router.post('/add_tyres', tags=["Admin Action"])
+@router.post('/add_tyre', tags=["Admin Action"])
 async def admin_add_products(db: db_dependency, user: user_dependency, tyre: NewTyreRequests):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -98,6 +95,14 @@ async def admin_add_products(db: db_dependency, user: user_dependency, tyre: New
     if not check_admin:
         raise HTTPException(status_code=401, detail="You are not admin")
 
+    check_tyre = db.query(Tyre).filter(
+        Tyre.itemid == tyre.itemid).first()
+
+    if check_tyre:
+        raise HTTPException(status_code=400, detail="Tyre ID already exists")
+
+    details = ["Safest Tyre", "Best Tyre", "Most Durable Tyre"]
+
     new_tyre = Tyre(
         itemid=tyre.itemid,
         productid="TYRE",
@@ -106,7 +111,7 @@ async def admin_add_products(db: db_dependency, user: user_dependency, tyre: New
         cartype=tyre.cartype,
         image_link=tyre.image_link,
         unitprice=float(tyre.price),
-        details=[tyre.details1, tyre.details2, tyre.details3],
+        details=details,
         tyresize=tyre.tyresize,
         speedindex=tyre.speedindex,
         loadindex=int(tyre.loadindex),
@@ -119,8 +124,13 @@ async def admin_add_products(db: db_dependency, user: user_dependency, tyre: New
     db.add(new_tyre)
     db.commit()
 
+    return {
+        "message": "Tyre added successfully",
+        "tyre": new_tyre
+    }
 
-@router.put('/update_tyres', tags=["Admin Action"])
+
+@router.put('/update_tyre', tags=["Admin Action"])
 async def update_tyres(db: db_dependency, user: user_dependency, update_tyre: NewTyreRequests):
     if not user:
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -142,8 +152,6 @@ async def update_tyres(db: db_dependency, user: user_dependency, update_tyre: Ne
     tyre.cartype = update_tyre.cartype
     tyre.image_link = update_tyre.image_link
     tyre.unitprice = update_tyre.price
-    tyre.details = [update_tyre.details1,
-                    update_tyre.details2, update_tyre.details3]
     tyre.tyresize = update_tyre.tyresize
     tyre.speedindex = update_tyre.speedindex
     tyre.loadindex = update_tyre.loadindex
