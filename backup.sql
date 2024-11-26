@@ -21,7 +21,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: appointment; Type: TABLE; Schema: public; Owner: postgres
+-- Name: appointment; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.appointment (
@@ -35,10 +35,8 @@ CREATE TABLE public.appointment (
 );
 
 
-ALTER TABLE public.appointment OWNER TO postgres;
-
 --
--- Name: brands; Type: TABLE; Schema: public; Owner: postgres
+-- Name: brands; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.brands (
@@ -51,10 +49,22 @@ CREATE TABLE public.brands (
 );
 
 
-ALTER TABLE public.brands OWNER TO postgres;
+--
+-- Name: car_specifications; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.car_specifications (
+    car_id integer NOT NULL,
+    car_brand character varying(255) NOT NULL,
+    car_model character varying(255) NOT NULL,
+    car_year integer NOT NULL,
+    tyre_size character varying(255) NOT NULL,
+    car_type character varying(255) NOT NULL
+);
+
 
 --
--- Name: car_specifications_car_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: car_specifications_car_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.car_specifications_car_id_seq
@@ -66,10 +76,15 @@ CREATE SEQUENCE public.car_specifications_car_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.car_specifications_car_id_seq OWNER TO postgres;
+--
+-- Name: car_specifications_car_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.car_specifications_car_id_seq OWNED BY public.car_specifications.car_id;
+
 
 --
--- Name: cart; Type: TABLE; Schema: public; Owner: postgres
+-- Name: cart; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.cart (
@@ -82,10 +97,8 @@ CREATE TABLE public.cart (
 );
 
 
-ALTER TABLE public.cart OWNER TO postgres;
-
 --
--- Name: feedback; Type: TABLE; Schema: public; Owner: postgres
+-- Name: feedback; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.feedback (
@@ -97,10 +110,8 @@ CREATE TABLE public.feedback (
 );
 
 
-ALTER TABLE public.feedback OWNER TO postgres;
-
 --
--- Name: invoice; Type: TABLE; Schema: public; Owner: postgres
+-- Name: invoice; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.invoice (
@@ -113,10 +124,8 @@ CREATE TABLE public.invoice (
 );
 
 
-ALTER TABLE public.invoice OWNER TO postgres;
-
 --
--- Name: notification; Type: TABLE; Schema: public; Owner: postgres
+-- Name: notification; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.notification (
@@ -130,10 +139,8 @@ CREATE TABLE public.notification (
 );
 
 
-ALTER TABLE public.notification OWNER TO postgres;
-
 --
--- Name: orders; Type: TABLE; Schema: public; Owner: postgres
+-- Name: orders; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.orders (
@@ -147,10 +154,8 @@ CREATE TABLE public.orders (
 );
 
 
-ALTER TABLE public.orders OWNER TO postgres;
-
 --
--- Name: ordersdetail; Type: TABLE; Schema: public; Owner: postgres
+-- Name: ordersdetail; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.ordersdetail (
@@ -163,10 +168,8 @@ CREATE TABLE public.ordersdetail (
 );
 
 
-ALTER TABLE public.ordersdetail OWNER TO postgres;
-
 --
--- Name: paymentmethod; Type: TABLE; Schema: public; Owner: postgres
+-- Name: paymentmethod; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.paymentmethod (
@@ -177,10 +180,8 @@ CREATE TABLE public.paymentmethod (
 );
 
 
-ALTER TABLE public.paymentmethod OWNER TO postgres;
-
 --
--- Name: products; Type: TABLE; Schema: public; Owner: postgres
+-- Name: products; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.products (
@@ -192,10 +193,8 @@ CREATE TABLE public.products (
 );
 
 
-ALTER TABLE public.products OWNER TO postgres;
-
 --
--- Name: registercar; Type: TABLE; Schema: public; Owner: postgres
+-- Name: registercar; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.registercar (
@@ -212,10 +211,8 @@ CREATE TABLE public.registercar (
 );
 
 
-ALTER TABLE public.registercar OWNER TO postgres;
-
 --
--- Name: registercar_carid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: registercar_carid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE public.registercar_carid_seq
@@ -227,17 +224,15 @@ CREATE SEQUENCE public.registercar_carid_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.registercar_carid_seq OWNER TO postgres;
-
 --
--- Name: registercar_carid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: registercar_carid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
 ALTER SEQUENCE public.registercar_carid_seq OWNED BY public.registercar.carid;
 
 
 --
--- Name: service; Type: TABLE; Schema: public; Owner: postgres
+-- Name: service; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.service (
@@ -253,10 +248,8 @@ CREATE TABLE public.service (
 );
 
 
-ALTER TABLE public.service OWNER TO postgres;
-
 --
--- Name: servicetype; Type: TABLE; Schema: public; Owner: postgres
+-- Name: servicetype; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.servicetype (
@@ -268,10 +261,8 @@ CREATE TABLE public.servicetype (
 );
 
 
-ALTER TABLE public.servicetype OWNER TO postgres;
-
 --
--- Name: tyre; Type: TABLE; Schema: public; Owner: postgres
+-- Name: tyre; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.tyre (
@@ -293,10 +284,8 @@ CREATE TABLE public.tyre (
 );
 
 
-ALTER TABLE public.tyre OWNER TO postgres;
-
 --
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.users (
@@ -319,17 +308,22 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+--
+-- Name: car_specifications car_id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.car_specifications ALTER COLUMN car_id SET DEFAULT nextval('public.car_specifications_car_id_seq'::regclass);
+
 
 --
--- Name: registercar carid; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: registercar carid; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.registercar ALTER COLUMN carid SET DEFAULT nextval('public.registercar_carid_seq'::regclass);
 
 
 --
--- Data for Name: appointment; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: appointment; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.appointment (appointmentid, accountid, appointmentdate, createdat, status, appointment_bay, carid) FROM stdin;
@@ -3180,7 +3174,7 @@ b2a2c4ec-a996-4733-9f56-d74aced5da2c	b7876c78-b1bf-49e0-9cd2-8b01e6545047	2022-1
 
 
 --
--- Data for Name: brands; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: brands; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.brands (brandid, productid, description, status, createdat, createdby) FROM stdin;
@@ -3192,7 +3186,113 @@ GODY	TYRE	Goodyear	Active	2024-11-26 21:18:29.143513	\N
 
 
 --
--- Data for Name: cart; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: car_specifications; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.car_specifications (car_id, car_brand, car_model, car_year, tyre_size, car_type) FROM stdin;
+1	proton	x70	2022	225/60R18	SUV
+2	proton	exora	2021	205/60R16	Passenger
+3	proton	iriz	2020	175/65R15	Passenger
+4	proton	perdana	2019	215/55R17	Passenger
+5	proton	suprima s	2018	205/55R16	Passenger
+6	proton	preve	2017	215/50R17	Passenger
+7	proton	x50	2022	215/60R17	SUV
+8	proton	satria neo	2016	195/50R15	Passenger
+9	proton	gen-2	2010	195/55R15	Passenger
+10	proton	wira	2009	175/70R13	Passenger
+11	proton	waja	2008	195/60R15	Passenger
+12	proton	savvy	2005	175/60R14	Passenger
+13	proton	inspira	2013	215/50R17	Passenger
+14	proton	arena	2006	185/70R13	Passenger
+15	proton	iswara	2007	175/70R13	Passenger
+16	proton	putra	2001	195/55R15	Passenger
+17	proton	juara	2004	185/60R14	Passenger
+18	proton	tiara	2003	165/65R13	Passenger
+19	perodua	myvi	2021	175/65R14	Passenger
+20	perodua	axia	2020	175/65R14	Passenger
+21	perodua	alza	2022	185/55R15	Passenger
+22	perodua	bezza	2021	175/65R14	Passenger
+23	perodua	aruz	2021	215/60R17	SUV
+24	perodua	kancil	2009	145/70R12	Passenger
+25	perodua	kelisa	2007	165/55R13	Passenger
+26	perodua	kenari	2006	165/55R14	Passenger
+27	perodua	viva	2015	155/65R13	Passenger
+28	perodua	rusa	2003	195/70R14	Passenger
+29	perodua	nautica	2009	215/65R16	SUV
+30	toyota	vios	2021	185/60R15	Passenger
+31	toyota	corolla altis	2022	205/55R16	Passenger
+32	toyota	hilux	2022	265/65R17	SUV
+33	toyota	camry	2021	215/55R17	Passenger
+34	toyota	fortuner	2021	265/60R18	SUV
+35	toyota	yaris	2020	185/60R15	Passenger
+36	toyota	avanza	2020	185/65R15	Passenger
+37	toyota	land cruiser	2021	285/60R18	SUV
+38	toyota	alphard	2022	235/50R18	Passenger
+39	toyota	rav4	2021	235/55R19	SUV
+40	toyota	harrier	2021	235/55R18	SUV
+41	toyota	prius	2020	195/65R15	Passenger
+42	toyota	rush	2020	215/65R16	SUV
+43	toyota	vellfire	2021	235/50R18	Passenger
+44	toyota	innova	2020	205/65R16	Passenger
+45	honda	city	2020	185/55R16	Passenger
+46	honda	civic	2021	215/50R17	Passenger
+47	honda	cr-v	2022	235/60R18	SUV
+48	honda	hr-v	2022	225/50R18	SUV
+49	honda	accord	2021	235/45R18	Passenger
+50	honda	jazz	2020	175/65R15	Passenger
+51	honda	br-v	2021	215/60R16	SUV
+52	honda	odyssey	2021	235/60R17	Passenger
+53	honda	pilot	2020	245/50R20	SUV
+54	honda	passport	2021	245/60R18	SUV
+55	bmw	3 series	2021	225/50R17	Passenger
+56	bmw	5 series	2022	245/45R18	Passenger
+57	bmw	x5	2022	275/40R20	SUV
+58	bmw	x3	2021	245/50R19	SUV
+59	bmw	x7	2022	285/45R21	SUV
+60	bmw	7 series	2021	245/50R18	Passenger
+61	bmw	x1	2020	225/50R18	SUV
+62	bmw	4 series	2021	225/45R18	Passenger
+63	bmw	6 series	2020	245/45R18	Passenger
+64	bmw	z4	2021	225/45R17	Passenger
+65	kia	picanto	2020	175/65R14	Passenger
+66	kia	rio	2021	185/65R15	Passenger
+67	kia	seltos	2022	215/55R17	SUV
+68	kia	sorento	2022	235/65R18	SUV
+69	kia	sportage	2022	225/55R18	SUV
+70	kia	optima	2020	215/55R17	Passenger
+71	kia	carnival	2021	235/60R18	Passenger
+72	kia	stinger	2022	225/40R19	Passenger
+73	hyundai	i10	2021	165/65R14	Passenger
+74	hyundai	elantra	2021	205/55R16	Passenger
+75	hyundai	tucson	2022	225/55R18	SUV
+76	hyundai	santa fe	2022	235/60R18	SUV
+77	hyundai	sonata	2021	215/55R17	Passenger
+78	hyundai	palisade	2022	245/50R20	SUV
+79	hyundai	kona	2021	215/55R17	SUV
+80	hyundai	venue	2022	205/60R16	SUV
+81	hyundai	ioniq	2021	205/55R16	Passenger
+82	hyundai	nexo	2022	225/55R19	SUV
+83	mercedes	a-class	2021	205/55R17	Passenger
+84	mercedes	c-class	2022	225/50R17	Passenger
+85	mercedes	e-class	2022	245/45R18	Passenger
+86	mercedes	s-class	2021	255/45R19	Passenger
+87	mercedes	gla	2022	215/55R18	SUV
+88	mercedes	glb	2021	235/55R18	SUV
+89	mercedes	glc	2022	235/55R19	SUV
+90	mercedes	gle	2022	275/50R20	SUV
+91	mercedes	gls	2021	275/50R20	SUV
+92	mercedes	eqc	2022	235/55R19	SUV
+93	mercedes	cla	2021	225/45R18	Passenger
+94	mercedes	amg gt	2021	265/35R19	Passenger
+95	mercedes	g-class	2021	275/55R19	SUV
+96	mercedes	maybach s-class	2022	255/45R20	Passenger
+97	mercedes	sprinter	2022	235/65R16	Passenger
+98	mercedes	v-class	2021	225/60R16	Passenger
+\.
+
+
+--
+-- Data for Name: cart; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.cart (accountid, productid, description, unitprice, quantity, createdat) FROM stdin;
@@ -3200,7 +3300,7 @@ COPY public.cart (accountid, productid, description, unitprice, quantity, create
 
 
 --
--- Data for Name: feedback; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: feedback; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.feedback (feedbackid, email, subject, content, createdat) FROM stdin;
@@ -3208,7 +3308,7 @@ COPY public.feedback (feedbackid, email, subject, content, createdat) FROM stdin
 
 
 --
--- Data for Name: invoice; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: invoice; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.invoice (invoiceid, accountid, methodid, createdat, orderid, totalprice) FROM stdin;
@@ -3216,7 +3316,7 @@ COPY public.invoice (invoiceid, accountid, methodid, createdat, orderid, totalpr
 
 
 --
--- Data for Name: notification; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: notification; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.notification (notificationid, accountid, message, createdat, status, category, icon) FROM stdin;
@@ -3234,7 +3334,7 @@ e01b81d9-3d07-4751-b8df-6c85d12389be	\N	New order placed by vincent.23@example.c
 
 
 --
--- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.orders (orderid, accountid, createdat, totalprice, appointmentid, status, paymentmethod) FROM stdin;
@@ -6085,7 +6185,7 @@ d8e942fc-7508-4ec9-ba7f-f6e4876ea289	b7876c78-b1bf-49e0-9cd2-8b01e6545047	2022-1
 
 
 --
--- Data for Name: ordersdetail; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: ordersdetail; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.ordersdetail (orderid, productid, carid, unitprice, quantity, totalprice) FROM stdin;
@@ -13206,7 +13306,7 @@ d8e942fc-7508-4ec9-ba7f-f6e4876ea289	SVR55	\N	40	1	40.00
 
 
 --
--- Data for Name: paymentmethod; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: paymentmethod; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.paymentmethod (methodid, description, status, createdat) FROM stdin;
@@ -13214,7 +13314,7 @@ COPY public.paymentmethod (methodid, description, status, createdat) FROM stdin;
 
 
 --
--- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.products (productid, description, status, createdby, createdat) FROM stdin;
@@ -13223,7 +13323,7 @@ TYRE	Tyre	Active	\N	2024-11-26 21:18:28.927617
 
 
 --
--- Data for Name: registercar; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: registercar; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.registercar (carid, accountid, carbrand, carmodel, caryear, platenumber, tyresize, cartype, createdat, "isActive") FROM stdin;
@@ -13752,7 +13852,7 @@ COPY public.registercar (carid, accountid, carbrand, carmodel, caryear, platenum
 
 
 --
--- Data for Name: service; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: service; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.service (serviceid, typeid, description, cartype, price, status, createdby, createdat, image_link) FROM stdin;
@@ -13819,7 +13919,7 @@ SVR59	OTHSVR	Nitrogen Top Up	SUV	2.50	Active	\N	\N	\N
 
 
 --
--- Data for Name: servicetype; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: servicetype; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.servicetype (typeid, description, status, createdat, createdby) FROM stdin;
@@ -13834,7 +13934,7 @@ OTHSVR	Other Service	Active	2024-11-26 21:18:29.180172	\N
 
 
 --
--- Data for Name: tyre; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: tyre; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.tyre (itemid, productid, brandid, description, cartype, image_link, unitprice, details, tyresize, speedindex, loadindex, stockunit, status, createdby, createdat) FROM stdin;
@@ -14051,7 +14151,7 @@ T209	TYRE	MICH	Michelin Latitude Tour HP	SUV	https://drive.google.com/uc?id=1Z84
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.users (accountid, firstname, lastname, username, phonenumber, email, address, state, city, zipcode, gender, fullname, password, "isAdmin", createdat, "isActive") FROM stdin;
@@ -14310,21 +14410,21 @@ c7c27f5f-f714-4486-ba6c-4d95fee7f177	Rahman	Rom	rahmanrom@gmail.com	\N	rahmanrom
 
 
 --
--- Name: car_specifications_car_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: car_specifications_car_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.car_specifications_car_id_seq', 98, true);
 
 
 --
--- Name: registercar_carid_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: registercar_carid_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
 SELECT pg_catalog.setval('public.registercar_carid_seq', 521, true);
 
 
 --
--- Name: appointment appointment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: appointment appointment_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.appointment
@@ -14332,7 +14432,7 @@ ALTER TABLE ONLY public.appointment
 
 
 --
--- Name: brands brands_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: brands brands_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.brands
@@ -14340,7 +14440,15 @@ ALTER TABLE ONLY public.brands
 
 
 --
--- Name: cart cart_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: car_specifications car_specifications_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.car_specifications
+    ADD CONSTRAINT car_specifications_pkey PRIMARY KEY (car_id);
+
+
+--
+-- Name: cart cart_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cart
@@ -14348,7 +14456,7 @@ ALTER TABLE ONLY public.cart
 
 
 --
--- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.feedback
@@ -14356,7 +14464,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- Name: invoice invoice_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: invoice invoice_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.invoice
@@ -14364,7 +14472,7 @@ ALTER TABLE ONLY public.invoice
 
 
 --
--- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: notification notification_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.notification
@@ -14372,7 +14480,7 @@ ALTER TABLE ONLY public.notification
 
 
 --
--- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.orders
@@ -14380,7 +14488,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: ordersdetail ordersdetail_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ordersdetail ordersdetail_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ordersdetail
@@ -14388,7 +14496,7 @@ ALTER TABLE ONLY public.ordersdetail
 
 
 --
--- Name: paymentmethod paymentmethod_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: paymentmethod paymentmethod_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.paymentmethod
@@ -14396,7 +14504,7 @@ ALTER TABLE ONLY public.paymentmethod
 
 
 --
--- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: products products_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.products
@@ -14404,7 +14512,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- Name: registercar registercar_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: registercar registercar_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.registercar
@@ -14412,7 +14520,7 @@ ALTER TABLE ONLY public.registercar
 
 
 --
--- Name: service service_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: service service_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.service
@@ -14420,7 +14528,7 @@ ALTER TABLE ONLY public.service
 
 
 --
--- Name: servicetype servicetype_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: servicetype servicetype_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.servicetype
@@ -14428,7 +14536,7 @@ ALTER TABLE ONLY public.servicetype
 
 
 --
--- Name: tyre tyre_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tyre tyre_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.tyre
@@ -14436,7 +14544,7 @@ ALTER TABLE ONLY public.tyre
 
 
 --
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -14444,7 +14552,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -14452,7 +14560,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_username_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.users
@@ -14460,28 +14568,35 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: ix_feedback_feedbackid; Type: INDEX; Schema: public; Owner: postgres
+-- Name: ix_car_specifications_car_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX ix_car_specifications_car_id ON public.car_specifications USING btree (car_id);
+
+
+--
+-- Name: ix_feedback_feedbackid; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX ix_feedback_feedbackid ON public.feedback USING btree (feedbackid);
 
 
 --
--- Name: ix_tyre_details; Type: INDEX; Schema: public; Owner: postgres
+-- Name: ix_tyre_details; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX ix_tyre_details ON public.tyre USING btree (details);
 
 
 --
--- Name: ix_users_accountid; Type: INDEX; Schema: public; Owner: postgres
+-- Name: ix_users_accountid; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX ix_users_accountid ON public.users USING btree (accountid);
 
 
 --
--- Name: appointment appointment_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: appointment appointment_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.appointment
@@ -14489,7 +14604,7 @@ ALTER TABLE ONLY public.appointment
 
 
 --
--- Name: appointment appointment_carid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: appointment appointment_carid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.appointment
@@ -14497,7 +14612,7 @@ ALTER TABLE ONLY public.appointment
 
 
 --
--- Name: brands brands_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: brands brands_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.brands
@@ -14505,7 +14620,7 @@ ALTER TABLE ONLY public.brands
 
 
 --
--- Name: brands brands_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: brands brands_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.brands
@@ -14513,7 +14628,7 @@ ALTER TABLE ONLY public.brands
 
 
 --
--- Name: cart cart_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: cart cart_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.cart
@@ -14521,7 +14636,7 @@ ALTER TABLE ONLY public.cart
 
 
 --
--- Name: feedback feedback_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: feedback feedback_email_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.feedback
@@ -14529,7 +14644,7 @@ ALTER TABLE ONLY public.feedback
 
 
 --
--- Name: invoice invoice_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: invoice invoice_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.invoice
@@ -14537,7 +14652,7 @@ ALTER TABLE ONLY public.invoice
 
 
 --
--- Name: invoice invoice_orderid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: invoice invoice_orderid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.invoice
@@ -14545,7 +14660,7 @@ ALTER TABLE ONLY public.invoice
 
 
 --
--- Name: notification notification_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: notification notification_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.notification
@@ -14553,7 +14668,7 @@ ALTER TABLE ONLY public.notification
 
 
 --
--- Name: orders orders_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: orders orders_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.orders
@@ -14561,7 +14676,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: orders orders_appointmentid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: orders orders_appointmentid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.orders
@@ -14569,7 +14684,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- Name: ordersdetail ordersdetail_carid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ordersdetail ordersdetail_carid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ordersdetail
@@ -14577,7 +14692,7 @@ ALTER TABLE ONLY public.ordersdetail
 
 
 --
--- Name: ordersdetail ordersdetail_orderid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: ordersdetail ordersdetail_orderid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.ordersdetail
@@ -14585,7 +14700,7 @@ ALTER TABLE ONLY public.ordersdetail
 
 
 --
--- Name: products products_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: products products_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.products
@@ -14593,7 +14708,7 @@ ALTER TABLE ONLY public.products
 
 
 --
--- Name: registercar registercar_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: registercar registercar_accountid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.registercar
@@ -14601,7 +14716,7 @@ ALTER TABLE ONLY public.registercar
 
 
 --
--- Name: service service_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: service service_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.service
@@ -14609,7 +14724,7 @@ ALTER TABLE ONLY public.service
 
 
 --
--- Name: service service_typeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: service service_typeid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.service
@@ -14617,7 +14732,7 @@ ALTER TABLE ONLY public.service
 
 
 --
--- Name: servicetype servicetype_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: servicetype servicetype_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.servicetype
@@ -14625,7 +14740,7 @@ ALTER TABLE ONLY public.servicetype
 
 
 --
--- Name: tyre tyre_brandid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tyre tyre_brandid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.tyre
@@ -14633,7 +14748,7 @@ ALTER TABLE ONLY public.tyre
 
 
 --
--- Name: tyre tyre_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tyre tyre_createdby_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.tyre
@@ -14641,7 +14756,7 @@ ALTER TABLE ONLY public.tyre
 
 
 --
--- Name: tyre tyre_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tyre tyre_productid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.tyre
