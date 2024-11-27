@@ -558,12 +558,13 @@ async def hit_notifications(db: db_dependency):
 
 @router.post('/random_notifications', tags=["Admin Action"])
 async def random_notifications(db: db_dependency):
-    emails = ["rahmanrom@gmail.com", "inbaraj@gmail.com"]
+    emails = ["rahmanrom@gmail.com", "inbaraj@gmail.com", "amerasyraf@gmail.com", "natekumar@gmail.com",
+              "jonathan@gmail.com", "Arifaiman@gmail.com", "Mariahanwar@gmail.com", "ruben@gmail.com", "yeepeng@gmail.com", "aniqfaidi@gmail.com", "aliyabat@gmail.com"]
     categories = ["Order", "Stock", "User"]
     icons = ["fa fa-shopping-cart",
              "fa fa-exclamation-triangle", "fa fa-user-plus"]
     products = [
-        "T001", "T003", "T005", "T009"
+        "T001", "T003", "T005", "T009", "T008", "T007", "T002", "T004", "T006"
     ]
 
     random_category = random.choice(categories)
@@ -571,6 +572,7 @@ async def random_notifications(db: db_dependency):
     if random_category == "Order":
         random_emails = random.choice(emails)
         random_float = random.uniform(50, 500)
+        random_float = round(random_float, 2)
         message = f"Received new order from {random_emails}! and the total order price is MYR {random_float}"
     elif random_category == "Stock":
         random_products = random.choice(products)
@@ -592,5 +594,3 @@ async def random_notifications(db: db_dependency):
 
     db.add(new_notification)
     db.commit()
-
-    
