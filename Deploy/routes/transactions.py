@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Path, HTTPException
-from models import Cart, Tyre, Service, Orders, OrdersDetail, Appointment, Invoice, RegisterCar
+from models import Cart, Tyre, Service, Orders, OrdersDetail, Appointment, RegisterCar, Notification, User
 from database import sessionLocal
 from typing_extensions import Annotated
 from sqlalchemy.orm import Session
@@ -298,6 +298,24 @@ async def checkout(db: db_dependency, user: user_dependency, checkout: CheckoutC
         # Update the order with the appointment ID
         db.query(Orders).filter(Orders.orderid == order_id).update(
             {"appointmentid": new_appointment.appointmentid})
+        db.commit()
+
+        user_details = db.query(User).filter(
+            User.accountid == user['accountid']).first()
+
+        email = user_details.email
+
+        # Create Notification
+        new_notification = Notification(
+            notificationid=str(uuid.uuid4()),
+            message=f"New order placed by {email} with total price of RM {total_price}",
+            status="Active",
+            icon="fas fa-shopping-cart",
+            category="Order",
+            createdat=datetime.now()
+        )
+
+        db.add(new_notification)
         db.commit()
 
     except Exception as e:

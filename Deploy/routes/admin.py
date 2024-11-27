@@ -207,6 +207,31 @@ async def give_admin_rights(db: db_dependency, user: user_dependency, accountid:
     }
 
 
+@router.post('/remove_admin_rights', tags=["Admin Action"])
+async def remove_admin_rights(db: db_dependency, user: user_dependency, accountid: str):
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    check_admin = db.query(User).filter(
+        User.accountid == user['accountid']).first()
+
+    if not check_admin:
+        raise HTTPException(status_code=401, detail="You are not admin")
+
+    user = db.query(User).filter(
+        User.accountid == accountid).first()
+
+    user.isAdmin = 'N'
+
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "message": "Admin rights removed",
+        "user": user
+    }
+
+
 @router.put('/edit_service', tags=["Admin Action"])
 async def edit_service(db: db_dependency, user: user_dependency, service_update: ServiceRequest):
     if not user:
