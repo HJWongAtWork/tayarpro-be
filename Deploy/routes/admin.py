@@ -10,6 +10,7 @@ from typing import Optional
 from sqlalchemy import extract, func
 import time
 import uuid
+import random
 
 
 def get_db():
@@ -453,7 +454,7 @@ async def get_notifications(db: db_dependency, user: user_dependency):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     notifications = db.query(Notification).order_by(
-        Notification.createdat.desc()).limit(5).all()
+        Notification.createdat.desc()).limit(10).all()
 
     return notifications
 
@@ -553,3 +554,43 @@ async def hit_notifications(db: db_dependency):
     notifications = db.query(Notification).all()
 
     return notifications
+
+
+@router.post('/random_notifications', tags=["Admin Action"])
+async def random_notifications(db: db_dependency):
+    emails = ["rahmanrom@gmail.com", "inbaraj@gmail.com"]
+    categories = ["Order", "Stock", "User"]
+    icons = ["fa fa-shopping-cart",
+             "fa fa-exclamation-triangle", "fa fa-user-plus"]
+    products = [
+        "T001", "T003", "T005", "T009"
+    ]
+
+    random_category = random.choice(categories)
+
+    if random_category == "Order":
+        random_emails = random.choice(emails)
+        random_float = random.uniform(50, 500)
+        message = f"Received new order from {random_emails}! and the total order price is MYR {random_float}"
+    elif random_category == "Stock":
+        random_products = random.choice(products)
+        message = f"Stock for Tyre {random_products} is running low!"
+    else:
+        random_emails = random.choice(emails)
+        message = f"{random_emails} has just registered!"
+
+    random_icon = random.choice(icons)
+
+    new_notification = Notification(
+        notificationid=str(uuid.uuid4()),
+        message=message,
+        status="active",
+        category=random_category,
+        icon=random_icon,
+        createdat=datetime.now()
+    )
+
+    db.add(new_notification)
+    db.commit()
+
+    
