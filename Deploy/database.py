@@ -6,7 +6,7 @@ from google.cloud.sql.connector import Connector
 
 DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASS = os.environ.get("DB_PASS", "postgres")
-DB_NAME = os.environ.get("DB_NAME", "tayarpro")
+DB_NAME = os.environ.get("DB_NAME", "tayarpro-be")
 INSTANCE_CONNECTION_NAME = os.environ.get("INSTANCE_CONNECTION_NAME", "gaia-capstone04-prd:us-central1:tayarpro-db")
 
 def getconn():
