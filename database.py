@@ -13,7 +13,7 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 INSTANCE_CONNECTION_NAME = os.getenv(
-    "INSTANCE_CONNECTION_NAME", "gaia-capstone01-prd:us-central1:test-db")
+    "INSTANCE_CONNECTION_NAME")
 
 
 # def getconn():
